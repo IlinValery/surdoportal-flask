@@ -3,10 +3,10 @@ from flask import Flask, jsonify
 from flask import abort, make_response
 from data import tasks
 
-def get_tasks():
-    return jsonify({'tasks': tasks})
+def get_all_tasks():
+    return jsonify({'data': tasks})
 
-def get_task(task_id):
+def get_task_by_id(task_id):
     print(task_id)
     task = []
     for t in tasks:
@@ -15,4 +15,4 @@ def get_task(task_id):
     print(task)
     if len(task) == 0:
         abort(404)
-    return jsonify({'task': task[0]})
+    return jsonify({'data': task[0]})
