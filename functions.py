@@ -1,7 +1,7 @@
-from flask import Flask, jsonify
+from flask import jsonify
 
-from flask import abort, make_response
-from data import tasks
+from flask import abort
+from testing_modules.data import tasks
 
 def get_all_tasks():
     return jsonify({'data': tasks})
