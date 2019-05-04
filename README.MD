@@ -13,7 +13,7 @@ mysql -u root -p
 ```
 
 ```mysql
-CREATE USER 'surdo_user'@'localhost' IDENTIFIED BY 'user_password';
+CREATE USER 'surdo_user'@'localhost' IDENTIFIED BY 'user_password'; # UserPass123)
 CREATE DATABASE surdoDB CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
 GRANT ALL PRIVILEGES ON surdoDB.* To 'surdo_user'@'localhost';
 ```

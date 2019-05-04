@@ -1,10 +1,11 @@
 from flask import jsonify
-
 from flask import abort
 from testing_modules.data import tasks
 
+
 def get_all_tasks():
     return jsonify({'data': tasks})
+
 
 def get_task_by_id(task_id):
     print(task_id)
