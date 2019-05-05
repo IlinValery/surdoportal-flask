@@ -1,4 +1,4 @@
-from application.settings import app, mysql, bcrypt
+from application.settings import app, bcrypt
 from flask_jwt_extended import create_access_token
 from flask import abort, make_response
 from flask import jsonify, request
@@ -23,24 +23,17 @@ def get_task(task_id):
 
 @app.route('/api/user/registration', methods=['POST'])
 def user_registration():
-    user = UserGateway
-    cursor = mysql.connection.cursor()
     email = str(request.get_json()["email"])
     first_name = str(request.get_json()['first_name'])
     second_name = str(request.get_json()['second_name'])
-    password = bcrypt.generate_password_hash(request.get_json()['password']).decode('utf')
+    password = str(request.get_json()['password'])
     is_superuser = int(request.get_json()['is_superuser'])
 
-    user.create(user, email=email, first_name=first_name, second_name=second_name, password=password, is_superuser=is_superuser)
+    user = UserGateway(user_email=email, user_fn=first_name, user_sn=second_name, user_pass=password,user_su=is_superuser)
+
+    user.create()
 
 
-    cursor.execute("INSERT INTO users (email, first_name, second_name, password, is_superuser) VALUES ('"+
-                   str(email) + "\', \'"+
-                   str(first_name) + "\', \'"+
-                   str(second_name) + "\', \'"+
-                   str(password) + "\', \'"+
-                   str(is_superuser) + "\');")
-    mysql.connection.commit()
 
     result = {
         "email": email,
@@ -62,25 +55,26 @@ def user_registration():
 
 @app.route('/api/user/login', methods=['POST'])
 def user_login():
-    print(request.get_json())
-    cursor = mysql.connection.cursor()
     email = str(request.get_json()["email"])
     password = request.get_json()['password']
-
+    user = UserGateway(user_email=email)
     result = ""
-
-    cursor.execute("SELECT * FROM users where email = '"+str(email)+"'")
-
-    rv = cursor.fetchone()
+    res = user.read(by_email=True)
+    print(res)
+    # cursor.execute("SELECT * FROM users where email = '"+str(email)+"'")
+    #
+    # rv = cursor.fetchone()
+    rv = user.read(by_email=True)
     if rv:
         if bcrypt.check_password_hash(rv['password'],password):
             access_token = create_access_token(identity= {"first_name": rv['first_name'], "second_name": rv['second_name'], "email": rv['email'], "is_superuser": rv['is_superuser']})
+            print(access_token)
             result = jsonify({"token": access_token})
         else:
             result = jsonify({"error": {"code": 2, "msg" : "Invalid password for user"}})
     else:
         result = jsonify({"error": {"code": 1, "msg": "No user with this email in system"}})
-    print(result)
+    print("!!!!!!!!!!!!!!!!!!!!!!", result)
     return result
 
 
