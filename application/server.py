@@ -29,9 +29,9 @@ def user_registration():
     password = str(request.get_json()['password'])
     is_superuser = int(request.get_json()['is_superuser'])
 
-    user = UserGateway(user_email=email, user_fn=first_name, user_sn=second_name, user_pass=password,user_su=is_superuser)
+    userDB = UserGateway(user_email=email, user_fn=first_name, user_sn=second_name, user_pass=password,user_su=is_superuser)
 
-    user.create()
+    userDB.create()
 
 
 
@@ -44,39 +44,43 @@ def user_registration():
     }
     return jsonify({"res":result})
 
-# {
-#   "email": "ivs@bmstu.ru",
-#   "password": "herherher",
-#   "first_name": "Valery",
-#   "second_name": "Ilin",
-#   "is_superuser": "1"
-# }
 
 
 @app.route('/api/user/login', methods=['POST'])
 def user_login():
     email = str(request.get_json()["email"])
     password = request.get_json()['password']
-    user = UserGateway(user_email=email)
+    userDB = UserGateway(user_email=email)
     result = ""
-    res = user.read(by_email=True)
-    print(res)
-    # cursor.execute("SELECT * FROM users where email = '"+str(email)+"'")
-    #
-    # rv = cursor.fetchone()
-    rv = user.read(by_email=True)
+
+    rv = userDB.read(by_email=True)
     if rv:
         if bcrypt.check_password_hash(rv['password'],password):
             access_token = create_access_token(identity= {"first_name": rv['first_name'], "second_name": rv['second_name'], "email": rv['email'], "is_superuser": rv['is_superuser']})
-            print(access_token)
             result = jsonify({"token": access_token})
         else:
             result = jsonify({"error": {"code": 2, "msg" : "Invalid password for user"}})
     else:
         result = jsonify({"error": {"code": 1, "msg": "No user with this email in system"}})
-    print("!!!!!!!!!!!!!!!!!!!!!!", result)
     return result
 
+
+@app.route('/api/user/all', methods=['GET'])
+def user_get_all():
+    userDB = UserGateway()
+    result = ""
+    rv = userDB.read(by_all=True)
+    result = jsonify({"data": rv})
+    return result
+
+
+@app.route('/api/user/<int:user_id>', methods=['GET'])
+def user_get_by_id(user_id):
+    userDB = UserGateway(user_id=user_id)
+    result = ""
+    rv = userDB.read()
+    result = jsonify({"data": rv})
+    return result
 
 
 @app.errorhandler(404)
