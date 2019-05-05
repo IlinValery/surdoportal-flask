@@ -25,3 +25,5 @@ Visitor Pattern:
 - https://youtu.be/axWaE7vTrjU
 - https://tavianator.com/the-visitor-pattern-in-python/
 - https://github.com/realistschuckle/pyvisitor
+- https://www.youtube.com/watch?v=iNt_UAHOvAE
+- https://www.youtube.com/watch?v=vc2Ay_IzEwM

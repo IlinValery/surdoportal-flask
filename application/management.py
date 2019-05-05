@@ -1,4 +1,5 @@
-from application.server import launch_server
+from application.server import *
+
 
 def execute_from_terminal(args):
     if len(args) == 1:
@@ -14,5 +15,5 @@ def execute_from_terminal(args):
             if param != "":
                 port = int(param)
 
-            launch_server(port)
+            app.run(debug=True, port=port)
 

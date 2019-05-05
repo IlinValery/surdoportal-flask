@@ -1,33 +1,11 @@
-from flask import Flask, jsonify, request, json
-from flask_mysqldb import MySQL
-from datetime import datetime
-from flask_cors import CORS
-from flask_bcrypt import Bcrypt
-from flask_jwt_extended import JWTManager, create_access_token
-
+from application.settings import app, mysql, bcrypt
+from flask_jwt_extended import create_access_token
 from flask import abort, make_response
+from flask import jsonify, request
 
 from application.views import get_all_tasks, get_task_by_id
 
-
-app = Flask(__name__)
-
-
-cors = CORS(app)
-mysql = MySQL(app)
-jwt = JWTManager(app)
-bcrypt = Bcrypt(app)
-
-
-def launch_server(port):
-    app.config["MYSQL_USER"] = "surdo_user"
-    app.config["MYSQL_PASSWORD"] = "UserPass123)"
-    app.config["MYSQL_DB"] = "surdoDB"
-    app.config["MYSQL_CURSORCLASS"] = "DictCursor"
-    app.config["JWT_SECRET_KEY"] = "jmTVPowuEd4YPRbPMDySmfhXYuczUb4F"
-
-    app.run(debug=True, port=port)
-
+from table_data_gateway.user_gateway import UserGateway
 
 @app.route('/todo/tasks/', methods=['GET'])
 def get_tasks():
@@ -45,12 +23,16 @@ def get_task(task_id):
 
 @app.route('/api/user/registration', methods=['POST'])
 def user_registration():
+    user = UserGateway
     cursor = mysql.connection.cursor()
     email = str(request.get_json()["email"])
     first_name = str(request.get_json()['first_name'])
     second_name = str(request.get_json()['second_name'])
     password = bcrypt.generate_password_hash(request.get_json()['password']).decode('utf')
     is_superuser = int(request.get_json()['is_superuser'])
+
+    user.create(user, email=email, first_name=first_name, second_name=second_name, password=password, is_superuser=is_superuser)
+
 
     cursor.execute("INSERT INTO users (email, first_name, second_name, password, is_superuser) VALUES ('"+
                    str(email) + "\', \'"+
