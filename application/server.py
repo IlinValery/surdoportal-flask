@@ -56,7 +56,7 @@ def user_login():
     rv = userDB.read(by_email=True)
     if rv:
         if bcrypt.check_password_hash(rv['password'],password):
-            access_token = create_access_token(identity= {"first_name": rv['first_name'], "second_name": rv['second_name'], "email": rv['email'], "is_superuser": rv['is_superuser']})
+            access_token = create_access_token(identity= {"id": str(rv['iduser']), "first_name": rv['first_name'], "second_name": rv['second_name'], "email": rv['email'], "is_superuser": rv['is_superuser']})
             result = jsonify({"token": access_token})
         else:
             result = jsonify({"error": {"code": 2, "msg" : "Invalid password for user"}})

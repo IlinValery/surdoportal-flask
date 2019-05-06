@@ -59,7 +59,7 @@ class UserGateway(object):
             if cursor_output:
                 fields = map(lambda x: x[0], cursor.description)
                 result = dict(zip(fields, cursor_output))
-
+            print(result)
         return result
 
     def update(self):
