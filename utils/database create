@@ -1,0 +1,32 @@
+CREATE TABLE `surdoDB`.`user` (
+  `iduser` INT NOT NULL AUTO_INCREMENT,
+  `email` VARCHAR(225) NOT NULL,
+  `first_name` VARCHAR(100) NOT NULL,
+  `last_name` VARCHAR(100) NOT NULL,
+  `password` VARCHAR(225) NOT NULL,
+  `is_superuser` TINYINT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`iduser`),
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC));
+
+CREATE TABLE `surdoDB`.`department` (
+  `iddepartment` INT NOT NULL AUTO_INCREMENT,
+  `caption` VARCHAR(45) NULL,
+  `initials` VARCHAR(45) NULL,
+  PRIMARY KEY (`iddepartment`));
+
+
+
+CREATE TABLE `surdoDB`.`log` (
+  `idlog` INT NOT NULL AUTO_INCREMENT,
+  `date_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user` INT(11) NOT NULL,
+  `table` VARCHAR(45) NOT NULL,
+  `element` INT(11) NOT NULL,
+  `action` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idlog`),
+  INDEX `user_idx` (`user` ASC),
+  CONSTRAINT `user`
+    FOREIGN KEY (`user`)
+    REFERENCES `surdoDB`.`user` (`iduser`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);

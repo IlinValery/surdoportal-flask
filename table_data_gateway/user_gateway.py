@@ -14,7 +14,7 @@ class UserGateway(UserBase):
         try:
             cursor.execute(request, data)
             self.connection.db.commit()
-            return {"code": 0, "message": "User was changed successfully"}
+            return {"code": 0, "message": "User was created successfully"}
         except IntegrityError:
             return {"code": 1, "message": "Error to load user with same name"}
 
@@ -91,7 +91,6 @@ class UserGateway(UserBase):
         try:
             cursor.execute(request, data)
             self.connection.db.commit()
-            return {"success": "User was deleted successfully"}
+            return {"code": 0, "message": "User was deleted successfully"}
         except IntegrityError:
-            return {"error": "Something went wrong"}
-        #DELETE FROM `surdoDB`.`user` WHERE (`iduser` = '1');
+            return {"code": 1, "message": "Something went wrong"}

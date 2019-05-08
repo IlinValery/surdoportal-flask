@@ -6,23 +6,16 @@ from flask import jsonify, request
 from application.views import get_all_tasks, get_task_by_id
 
 from table_data_gateway.user_gateway import UserGateway
+from table_data_gateway.log_gateway import LogGateway
 
-@app.route('/todo/tasks/', methods=['GET'])
-def get_tasks():
-    return get_all_tasks()
 
 @app.route('/api/test_connection_with_server', methods=['GET'])
 def server_connection_test():
     return jsonify({"connection_status": "ОК"})
 
 
-@app.route('/todo/tasks/<int:task_id>', methods=['GET'])
-def get_task(task_id):
-    return get_task_by_id(task_id)
-
-
 @app.route('/api/user/create', methods=['POST'])
-def user_registration():
+def post_user_create():
     email = str(request.get_json()["email"])
     first_name = str(request.get_json()['first_name'])
     last_name = str(request.get_json()['last_name'])
@@ -105,11 +98,20 @@ def user_edit_password():
 def user_delete_by_id():
     user_id = str(request.get_json()["user_id"])
     userDB = UserGateway(user_id=user_id)
-    print(request)
     result = ""
     rv = userDB.delete()
     result = jsonify({"data": rv})
     return result
+
+
+@app.route('/api/log/read_all/<int:count>', methods=['GET'])
+def get_log_count(count):
+    logDB = LogGateway()
+    result = ""
+    rv = logDB.read_last(count)
+    result = jsonify({"data": rv})
+    return result
+
 
 
 @app.errorhandler(404)

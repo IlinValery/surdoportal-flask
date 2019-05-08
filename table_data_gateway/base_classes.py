@@ -180,7 +180,7 @@ class DisciplineBase(ABC):
 class DepartmentBase(ABC):
     def __init__(self, department_id=None, department_name=str(), department_initials=str()):
         self.id = department_id
-        self.name = department_name
+        self.caption = department_name
         self.initials = department_initials
 
     @abstractmethod
@@ -204,7 +204,7 @@ class DepartmentBase(ABC):
         pass
 
 
-class LogsBase(ABC):
+class LogBase(ABC):
     def __init__(self, log_date=str(), log_table=str(), log_element_id=int(), log_action=str(), log_user_id=int()):
         self.date = log_date
         self.user = log_user_id
@@ -217,5 +217,9 @@ class LogsBase(ABC):
         pass
 
     @abstractmethod
-    def read_start_date(self, start_date):
+    def read_last(self, count):
+        pass
+
+    @abstractmethod
+    def read_by_user_id(self, start_date):
         pass
