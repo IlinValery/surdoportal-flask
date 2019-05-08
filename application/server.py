@@ -21,28 +21,23 @@ def get_task(task_id):
     return get_task_by_id(task_id)
 
 
-@app.route('/api/user/registration', methods=['POST'])
+@app.route('/api/user/create', methods=['POST'])
 def user_registration():
     email = str(request.get_json()["email"])
     first_name = str(request.get_json()['first_name'])
-    second_name = str(request.get_json()['second_name'])
+    last_name = str(request.get_json()['last_name'])
     password = str(request.get_json()['password'])
     is_superuser = int(request.get_json()['is_superuser'])
 
-    userDB = UserGateway(user_email=email, user_fn=first_name, user_sn=second_name, user_pass=password,user_su=is_superuser)
+    userDB = UserGateway(user_email=email, user_fn=first_name, user_sn=last_name, user_pass=password,user_su=is_superuser)
 
-    userDB.create()
-
-
+    database_result = userDB.create()
 
     result = {
-        "email": email,
-        "first_name": first_name,
-        "last_name": second_name,
-        "password": password,
-        "is_super": is_superuser
+        "code": database_result['code'],
+        "message": database_result['message'],
     }
-    return jsonify({"res":result})
+    return jsonify({"result" : result})
 
 
 
@@ -50,13 +45,13 @@ def user_registration():
 def user_login():
     email = str(request.get_json()["email"])
     password = request.get_json()['password']
-    userDB = UserGateway(user_email=email)
+    userDB = UserGateway()
     result = ""
 
-    rv = userDB.read(by_email=True)
+    rv = userDB.read_by_email(email)
     if rv:
         if bcrypt.check_password_hash(rv['password'],password):
-            access_token = create_access_token(identity= {"id": str(rv['iduser']), "first_name": rv['first_name'], "second_name": rv['second_name'], "email": rv['email'], "is_superuser": rv['is_superuser']})
+            access_token = create_access_token(identity= {"id": str(rv['iduser']), "first_name": rv['first_name'], "last_name": rv['last_name'], "email": rv['email'], "is_superuser": rv['is_superuser']})
             result = jsonify({"token": access_token})
         else:
             result = jsonify({"error": {"code": 2, "msg" : "Invalid password for user"}})
@@ -69,16 +64,50 @@ def user_login():
 def user_get_all():
     userDB = UserGateway()
     result = ""
-    rv = userDB.read(by_all=True)
+    rv = userDB.read_all()
     result = jsonify({"data": rv})
     return result
 
 
 @app.route('/api/user/<int:user_id>', methods=['GET'])
 def user_get_by_id(user_id):
-    userDB = UserGateway(user_id=user_id)
+    userDB = UserGateway()
     result = ""
-    rv = userDB.read()
+    rv = userDB.read_by_id(user_id)
+    result = jsonify({"data": rv})
+    return result
+
+
+@app.route('/api/user/edit_fields', methods=['POST'])
+def user_edit_fields():
+    id_user = str(request.get_json()["id"])
+    email = str(request.get_json()["email"])
+    first_name = str(request.get_json()['first_name'])
+    last_name = str(request.get_json()['last_name'])
+    is_superuser = int(request.get_json()['is_superuser'])
+    userDB = UserGateway(user_id=id_user, user_email=email, user_fn=first_name, user_sn=last_name, user_su=is_superuser)
+    rv = userDB.update_fields()
+    result = jsonify({"result": rv})
+    return result
+
+@app.route('/api/user/edit_password', methods=['POST'])
+def user_edit_password():
+    id_user = str(request.get_json()["id"])
+    password = str(request.get_json()["password"])
+    userDB = UserGateway(user_id=id_user, user_pass=password)
+    rv = userDB.update_password()
+    result = jsonify({"result": rv})
+    return result
+
+
+
+@app.route('/api/user/delete', methods=['POST'])
+def user_delete_by_id():
+    user_id = str(request.get_json()["user_id"])
+    userDB = UserGateway(user_id=user_id)
+    print(request)
+    result = ""
+    rv = userDB.delete()
     result = jsonify({"data": rv})
     return result
 
