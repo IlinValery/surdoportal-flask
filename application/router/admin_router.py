@@ -41,26 +41,28 @@ class AdminRouter():
         first_name = str(request.get_json()['first_name'])
         last_name = str(request.get_json()['last_name'])
         is_superuser = int(request.get_json()['is_superuser'])
-        rv = self.control_service.user_edit_fields(id_user, email, first_name, last_name, is_superuser)
+        usertoken = str(request.get_json()["usertoken"])
+        rv = self.control_service.user_edit_fields(usertoken, id_user, email, first_name, last_name, is_superuser)
         result = jsonify({"result": rv})
         return result
 
     def post_user_edit_password(self):
         id_user = str(request.get_json()["id"])
         password = str(request.get_json()["password"])
-        rv = self.control_service.user_edit_password(id_user,password)
+        usertoken = str(request.get_json()["usertoken"])
+        rv = self.control_service.user_edit_password(usertoken, id_user, password)
         result = jsonify({"result": rv})
         return result
 
     def post_user_delete_by_id(self):
         user_id = str(request.get_json()["user_id"])
-        rv = self.control_service.user_delete_by_id(user_id)
+        usertoken = str(request.get_json()["usertoken"])
+        rv = self.control_service.user_delete_by_id(usertoken, user_id)
         result = jsonify({"data": rv})
         return result
 
     def post_log_read_last(self):
         count = request.get_json()["count"]
-        print(request.get_json())
         rv = self.control_service.log_read_last(count)
         result = jsonify({"data": rv})
         return result

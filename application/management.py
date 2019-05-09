@@ -1,6 +1,5 @@
 from application.application import Application
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager
 from application.utils.create_superuser import create_superuser
 
 
@@ -15,7 +14,6 @@ def execute_from_terminal(args):
             port = 5555
             application = Application(port=port)
             cors = CORS(application.server)
-            jwt = JWTManager(application.server)
             application.create_app()
             application.server.run(debug=True, port=port)
 

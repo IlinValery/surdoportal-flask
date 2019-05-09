@@ -1,5 +1,4 @@
 from application.gateway.user_gateway import UserGateway
-from flask_jwt_extended import create_access_token
 from werkzeug.security import check_password_hash
 from jwt import encode
 from application.settings import secret_key, algorithms

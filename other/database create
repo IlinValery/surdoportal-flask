@@ -23,10 +23,4 @@ CREATE TABLE `surdoDB`.`log` (
   `table` VARCHAR(45) NOT NULL,
   `element` INT(11) NOT NULL,
   `action` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idlog`),
-  INDEX `user_idx` (`user` ASC),
-  CONSTRAINT `user`
-    FOREIGN KEY (`user`)
-    REFERENCES `surdoDB`.`user` (`iduser`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE);
+  PRIMARY KEY (`idlog`));

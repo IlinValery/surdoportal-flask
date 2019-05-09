@@ -24,13 +24,13 @@ class ControlService:
                              user_su=is_superuser)
 
         database_result = userDB.create()
-
         result = {
             "code": database_result['code'],
             "message": database_result['message'],
         }
         if result["code"]==0:
-            ControlService.write_to_log(usertoken,"user", "1","add")
+            number = userDB.get_last_number()
+            ControlService.write_to_log(usertoken,"user", str(number),"add")
         return result
 
     @staticmethod
@@ -46,22 +46,28 @@ class ControlService:
         return rv
 
     @staticmethod
-    def user_edit_fields(id_user, email, first_name, last_name, is_superuser):
+    def user_edit_fields(usertoken, id_user, email, first_name, last_name, is_superuser):
         userDB = UserGateway(user_id=id_user, user_email=email, user_fn=first_name, user_sn=last_name, user_su=is_superuser)
         rv = userDB.update_fields()
+        if rv['code']==0:
+            ControlService.write_to_log(usertoken, "user", str(id_user), "edit")
         return rv
 
     @staticmethod
-    def user_edit_password(id_user, password):
+    def user_edit_password(usertoken, id_user, password):
         pw_hash = generate_password_hash(password)
         userDB = UserGateway(user_id=id_user, user_pass=pw_hash)
         rv = userDB.update_password()
+        if rv['code']==0:
+            ControlService.write_to_log(usertoken, "user", str(id_user), "edit_password")
         return rv
 
     @staticmethod
-    def user_delete_by_id(user_id):
+    def user_delete_by_id(usertoken, user_id):
         userDB = UserGateway(user_id=user_id)
         rv = userDB.delete()
+        if rv['code']==0:
+            ControlService.write_to_log(usertoken, "user", str(user_id), "delete")
         return rv
 
     @staticmethod
@@ -70,6 +76,10 @@ class ControlService:
         rv = logDB.read_last(count=count)
         if rv==None:
             return {}
+        else:
+            for (index, column) in enumerate(rv):
+                tmp = column['date_time']
+                rv[index]['date_time'] = tmp.strftime('%d.%m.%Y %H:%M')
         return rv
 
 

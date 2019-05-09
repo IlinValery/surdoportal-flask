@@ -18,6 +18,13 @@ class UserGateway(UserBase):
         except IntegrityError:
             return {"code": 1, "message": "Error to load user with same name"}
 
+    def get_last_number(self):
+        cursor = self.connection.db.cursor()
+        request = "SELECT MAX(iduser) FROM user"
+        cursor.execute(request)
+        cursor_output = cursor.fetchone()
+        return cursor_output[0]
+
     def read_all(self):
         cursor = self.connection.db.cursor()
         result = None
