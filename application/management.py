@@ -1,6 +1,7 @@
 from application.application import Application
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from application.utils.create_superuser import create_superuser
 
 
 def execute_from_terminal(args):
@@ -18,3 +19,7 @@ def execute_from_terminal(args):
             application.create_app()
             application.server.run(debug=True, port=port)
 
+        elif command == "createsuperuser":
+            create_superuser()
+        else:
+            print("Unsupported command! Use next commands:\n\t1. runserver\n\t2. createsuperuser")
