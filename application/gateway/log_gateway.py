@@ -7,7 +7,7 @@ class LogGateway(LogBase):
 
     def create(self):
         cursor = self.connection.db.cursor()
-        request = "INSERT INTO log (user, table, element, action) VALUES (%s, %s, %s, %s)"
+        request = "INSERT INTO log (`user`, `table`, `element`, `action`) VALUES (%s, %s, %s, %s);"
         data = (self.user, self.table, self.element, self.action)
 
         try:

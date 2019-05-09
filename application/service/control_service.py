@@ -1,14 +1,24 @@
 from application.gateway.user_gateway import UserGateway
 from application.gateway.log_gateway import LogGateway
 from werkzeug.security import generate_password_hash
-
+from jwt import decode
+from application.settings import secret_key, algorithms
 
 class ControlService:
     """
     Класс для управления данными (пользователи, кафедры, преподаватели, дисциплины) - удаление, добавление, изменение
     """
+
     @staticmethod
-    def user_register(email, first_name, last_name, password, is_superuser):
+    def write_to_log(usertoken, table, element_id, action):
+        identity = decode(usertoken, secret_key, algorithms)
+        user_id = identity['identity']['id']
+        log = LogGateway(log_user_id=user_id, log_table=table, log_element_id=element_id, log_action=action).create()
+        pass
+
+
+    @staticmethod
+    def user_register(usertoken, email, first_name, last_name, password, is_superuser):
         pw_hash = generate_password_hash(password)
         userDB = UserGateway(user_email=email, user_fn=first_name, user_sn=last_name, user_pass=pw_hash,
                              user_su=is_superuser)
@@ -19,6 +29,8 @@ class ControlService:
             "code": database_result['code'],
             "message": database_result['message'],
         }
+        if result["code"]==0:
+            ControlService.write_to_log(usertoken,"user", "1","add")
         return result
 
     @staticmethod

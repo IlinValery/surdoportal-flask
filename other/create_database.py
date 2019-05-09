@@ -15,4 +15,4 @@
 #   `iddepartment` INT NOT NULL,
 #   `caption` VARCHAR(45) NULL,
 #   `initials` VARCHAR(45) NULL,
-#   PRIMARY KEY (`iddepartment`));
+#   PRIMARY KEY (`iddepartment`))$

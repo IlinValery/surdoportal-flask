@@ -1,4 +1,5 @@
 from flask import make_response, jsonify, request
+from flask_jwt_extended import get_jwt_identity
 
 from application.service.auth_service import AuthService
 from application.service.control_service import ControlService
@@ -20,7 +21,8 @@ class AdminRouter():
         last_name = str(request.get_json()['last_name'])
         password = str(request.get_json()['password'])
         is_superuser = int(request.get_json()['is_superuser'])
-        result = self.control_service.user_register(email, first_name, last_name, password, is_superuser)
+        usertoken = str(request.get_json()['usertoken'])
+        result = self.control_service.user_register(usertoken, email, first_name, last_name, password, is_superuser)
         return jsonify({"result": result})
 
     def get_user_get_all(self):
@@ -56,7 +58,9 @@ class AdminRouter():
         result = jsonify({"data": rv})
         return result
 
-    def get_log_read_last(self, count):
+    def post_log_read_last(self):
+        count = request.get_json()["count"]
+        print(request.get_json())
         rv = self.control_service.log_read_last(count)
         result = jsonify({"data": rv})
         return result
