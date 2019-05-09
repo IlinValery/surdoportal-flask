@@ -1,5 +1,5 @@
-from application.connection import *
-from table_data_gateway.base_classes import DepartmentBase
+from application.table_data_gateway.connection import *
+from application.base_classes import DepartmentBase
 
 
 class DepartmentGateway(DepartmentBase):

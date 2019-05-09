@@ -1,5 +1,5 @@
-from application.connection import *
-from table_data_gateway.base_classes import UserBase
+from application.gateway.connection import *
+from application.base_classes import UserBase
 
 
 class UserGateway(UserBase):

@@ -1,6 +1,4 @@
-from application.settings import bcrypt
 from abc import ABC, abstractmethod
-
 
 class UserBase(ABC):
     def __init__(self, user_id=None, user_email=str(), user_fn=str(), user_sn=str(), user_pass="secret_pass", user_su=0):
@@ -8,7 +6,7 @@ class UserBase(ABC):
         self.email = user_email
         self.first_name = user_fn
         self.last_name = user_sn
-        self.password = bcrypt.generate_password_hash(user_pass).decode('utf')
+        self.password = user_pass
         self.is_superuser = user_su
 
     @abstractmethod
@@ -221,5 +219,5 @@ class LogBase(ABC):
         pass
 
     @abstractmethod
-    def read_by_user_id(self, start_date):
+    def read_by_user_id(self, count):
         pass
