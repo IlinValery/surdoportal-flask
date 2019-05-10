@@ -1,4 +1,4 @@
-from application.table_data_gateway.connection import *
+from application.gateway.connection import *
 from application.base_classes import DepartmentBase
 
 
