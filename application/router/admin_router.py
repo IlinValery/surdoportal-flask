@@ -81,4 +81,20 @@ class AdminRouter():
         result = self.control_service.department_add(usertoken, initials=initials, caption=caption)
         return jsonify({"result": result})
 
+    def post_department_delete_by_id(self):
+        department_id = str(request.get_json()["department_id"])
+        usertoken = str(request.get_json()["usertoken"])
+        rv = self.control_service.department_delete_by_id(usertoken, department_id)
+        result = jsonify({"result": rv})
+        return result
+
+    def post_department_edit_by_id(self):
+        department_id = str(request.get_json()["department_id"])
+        initials = str(request.get_json()["initials"])
+        caption = str(request.get_json()["caption"])
+        usertoken = str(request.get_json()["usertoken"])
+        rv = self.control_service.department_edit_by_id(usertoken, department_id, initials, caption)
+        result = jsonify({"result": rv})
+        return result
+
 

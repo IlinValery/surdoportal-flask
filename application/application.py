@@ -33,3 +33,10 @@ class Application:
             self.server.add_url_rule('/api/log/read_all', view_func=admin_router.post_log_read_last, methods=['POST'])
             self.server.add_url_rule('/api/log/read_by_user', view_func=admin_router.post_log_read_by_user, methods=['POST'])
 
+
+            self.server.add_url_rule('/api/department/create', view_func=admin_router.post_department_add, methods=['POST'])
+
+            self.server.add_url_rule('/api/department/all', view_func=data_router.get_department_get_all, methods=['GET'])
+            self.server.add_url_rule('/api/department/<int:dep_id>', view_func=data_router.get_department_get_by_id, methods=['GET'])
+            self.server.add_url_rule('/api/department/edit', view_func=admin_router.post_department_edit_by_id, methods=['POST'])
+            self.server.add_url_rule('/api/department/delete', view_func=admin_router.post_department_delete_by_id, methods=['POST'])

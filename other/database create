@@ -10,8 +10,8 @@ CREATE TABLE `surdoDB`.`user` (
 
 CREATE TABLE `surdoDB`.`department` (
   `iddepartment` INT NOT NULL AUTO_INCREMENT,
-  ]сфзешщт] МФКСРФК(45) ТГДДб
-  `initials` VARCHAR(45) NULL,
+  `caption` VARCHAR(225) NOT NULL,
+  `initials` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`iddepartment`));
 
 

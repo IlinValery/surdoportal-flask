@@ -23,36 +23,36 @@ class ControlService:
     @staticmethod
     def user_register(usertoken, email, first_name, last_name, password, is_superuser):
         pw_hash = generate_password_hash(password)
-        userDB = UserGateway(user_email=email, user_fn=first_name, user_sn=last_name, user_pass=pw_hash,
+        user_db = UserGateway(user_email=email, user_fn=first_name, user_sn=last_name, user_pass=pw_hash,
                              user_su=is_superuser)
 
-        database_result = userDB.create()
+        database_result = user_db.create()
         result = {
             "code": database_result['code'],
             "message": database_result['message'],
         }
         if result["code"]==0:
-            #number = userDB.get_last_number()
-            number = userDB.access_get_number(visitor=VisitorLastNumber)
+            #number = user_db.get_last_number()
+            number = user_db.access_get_number(visitor=VisitorLastNumber)
             ControlService.write_to_log(usertoken,"user", str(number),"add")
         return result
 
     @staticmethod
     def user_get_all():
-        userDB = UserGateway()
-        rv = userDB.read_all()
+        user_db = UserGateway()
+        rv = user_db.read_all()
         return rv
 
     @staticmethod
     def user_by_id(user_id):
-        userDB = UserGateway()
-        rv = userDB.read_by_id(user_id)
+        user_db = UserGateway()
+        rv = user_db.read_by_id(user_id)
         return rv
 
     @staticmethod
     def user_edit_fields(usertoken, id_user, email, first_name, last_name, is_superuser):
-        userDB = UserGateway(user_id=id_user, user_email=email, user_fn=first_name, user_sn=last_name, user_su=is_superuser)
-        rv = userDB.update_fields()
+        user_db = UserGateway(user_id=id_user, user_email=email, user_fn=first_name, user_sn=last_name, user_su=is_superuser)
+        rv = user_db.update_fields()
         if rv['code']==0:
             ControlService.write_to_log(usertoken, "user", str(id_user), "edit")
         return rv
@@ -60,16 +60,16 @@ class ControlService:
     @staticmethod
     def user_edit_password(usertoken, id_user, password):
         pw_hash = generate_password_hash(password)
-        userDB = UserGateway(user_id=id_user, user_pass=pw_hash)
-        rv = userDB.update_password()
+        user_db = UserGateway(user_id=id_user, user_pass=pw_hash)
+        rv = user_db.update_password()
         if rv['code']==0:
             ControlService.write_to_log(usertoken, "user", str(id_user), "edit_password")
         return rv
 
     @staticmethod
     def user_delete_by_id(usertoken, user_id):
-        userDB = UserGateway(user_id=user_id)
-        rv = userDB.delete()
+        user_db = UserGateway(user_id=user_id)
+        rv = user_db.delete()
         if rv['code']==0:
             ControlService.write_to_log(usertoken, "user", str(user_id), "delete")
         return rv
@@ -100,19 +100,35 @@ class ControlService:
                 rv[index]['date_time'] = tmp.strftime('%d.%m.%Y %H:%M')
         return rv
 
+
     @staticmethod
     def department_add(usertoken, initials, caption):
-        departmentDB = DepartmentGateway(department_initials=initials, department_name=caption)
+        depatment_db = DepartmentGateway(department_initials=initials, department_name=caption)
         identity = decode(usertoken, secret_key, algorithms)
-        user_id = identity['identity']['id']
-        database_result = departmentDB.create()
+        database_result = depatment_db.create()
         result = {
             "code": database_result['code'],
             "message": database_result['message'],
         }
-        if result["code"]==0:
-            number = departmentDB.access_get_number(visitor=VisitorLastNumber)
-            ControlService.write_to_log(usertoken,"user", str(number),"add")
+        if result["code"] == 0:
+            number = depatment_db.access_get_number(visitor=VisitorLastNumber)
+            print(number)
+            ControlService.write_to_log(usertoken, "department", str(number),"add")
         return result
 
+    @staticmethod
+    def department_delete_by_id(usertoken, department_id):
+        depatment_db = DepartmentGateway(department_id=department_id)
+        rv = depatment_db.delete()
+        if rv['code'] == 0:
+            ControlService.write_to_log(usertoken, "department", str(department_id), "delete")
+        return rv
+
+    @staticmethod
+    def department_edit_by_id(usertoken, department_id, initials, caption):
+        depatment_db = DepartmentGateway(department_id=department_id, department_initials=initials, department_name=caption)
+        rv = depatment_db.update()
+        if rv['code'] == 0:
+            ControlService.write_to_log(usertoken, "department", str(department_id), "edit")
+        return rv
 
