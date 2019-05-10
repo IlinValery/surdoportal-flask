@@ -74,4 +74,11 @@ class AdminRouter():
         result = jsonify({"data": rv})
         return result
 
+    def post_department_add(self):
+        usertoken = str(request.get_json()['usertoken'])
+        initials = str(request.get_json()['initials'])
+        caption = str(request.get_json()['caption'])
+        result = self.control_service.department_add(usertoken, initials=initials, caption=caption)
+        return jsonify({"result": result})
+
 

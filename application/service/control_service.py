@@ -1,8 +1,11 @@
 from application.gateway.user_gateway import UserGateway
 from application.gateway.log_gateway import LogGateway
+from application.gateway.department_gateway import DepartmentGateway
 from werkzeug.security import generate_password_hash
 from jwt import decode
 from application.settings import secret_key, algorithms
+from application.visitor.visit_last_number import VisitorLastNumber
+
 
 class ControlService:
     """
@@ -29,7 +32,8 @@ class ControlService:
             "message": database_result['message'],
         }
         if result["code"]==0:
-            number = userDB.get_last_number()
+            #number = userDB.get_last_number()
+            number = userDB.access_get_number(visitor=VisitorLastNumber)
             ControlService.write_to_log(usertoken,"user", str(number),"add")
         return result
 
@@ -95,5 +99,20 @@ class ControlService:
                 tmp = column['date_time']
                 rv[index]['date_time'] = tmp.strftime('%d.%m.%Y %H:%M')
         return rv
+
+    @staticmethod
+    def department_add(usertoken, initials, caption):
+        departmentDB = DepartmentGateway(department_initials=initials, department_name=caption)
+        identity = decode(usertoken, secret_key, algorithms)
+        user_id = identity['identity']['id']
+        database_result = departmentDB.create()
+        result = {
+            "code": database_result['code'],
+            "message": database_result['message'],
+        }
+        if result["code"]==0:
+            number = departmentDB.access_get_number(visitor=VisitorLastNumber)
+            ControlService.write_to_log(usertoken,"user", str(number),"add")
+        return result
 
 

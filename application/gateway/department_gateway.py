@@ -1,8 +1,10 @@
 from application.gateway.connection import *
 from application.base_classes import DepartmentBase
+from application.visitor.visitor_component import VisitorComponent
+from application.visitor.visitor import Visitor
 
 
-class DepartmentGateway(DepartmentBase):
+class DepartmentGateway(DepartmentBase, VisitorComponent):
     connection = DatabaseConnection()
 
     def create(self):
@@ -69,3 +71,6 @@ class DepartmentGateway(DepartmentBase):
             return {"code": 0, "message": "Department was deleted successfully"}
         except IntegrityError:
             return {"code": 1, "message": "Something went wrong"}
+
+    def access_get_number(self, visitor: Visitor):
+        visitor.get_department_number(self, element=Visitor)

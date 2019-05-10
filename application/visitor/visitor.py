@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
-from application.gateway.user_gateway import UserGateway
-from application.gateway.log_gateway import LogGateway
-
+# from application.gateway.user_gateway import UserGateway
+# from application.gateway.department_gateway import DepartmentGateway
 
 class Visitor(ABC):
 
@@ -11,11 +10,11 @@ class Visitor(ABC):
     определить конкретный класс компонента, с которым он имеет дело.
     """
     @abstractmethod
-    def load_user_data(self, element: UserGateway) -> None:
+    def get_user_number(self, element): #UserGateway
         pass
 
     @abstractmethod
-    def load_log_data(self, element: LogGateway) -> None:
+    def get_department_number(self, element):
         pass
 
 

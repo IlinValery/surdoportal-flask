@@ -1,8 +1,9 @@
 from application.gateway.connection import *
 from application.base_classes import UserBase
+from application.visitor.visitor_component import VisitorComponent
+from application.visitor.visitor import Visitor
 
-
-class UserGateway(UserBase):
+class UserGateway(UserBase, VisitorComponent):
     connection = DatabaseConnection()
 
     def create(self):
@@ -17,13 +18,6 @@ class UserGateway(UserBase):
             return {"code": 0, "message": "User was created successfully"}
         except IntegrityError:
             return {"code": 1, "message": "Error to load user with same name"}
-
-    def get_last_number(self):
-        cursor = self.connection.db.cursor()
-        request = "SELECT MAX(iduser) FROM user"
-        cursor.execute(request)
-        cursor_output = cursor.fetchone()
-        return cursor_output[0]
 
     def read_all(self):
         cursor = self.connection.db.cursor()
@@ -101,3 +95,6 @@ class UserGateway(UserBase):
             return {"code": 0, "message": "User was deleted successfully"}
         except IntegrityError:
             return {"code": 1, "message": "Something went wrong"}
+
+    def access_get_number(self, visitor: Visitor):
+        return visitor.get_user_number(self, element=self)

@@ -8,5 +8,5 @@ class VisitorComponent(ABC):
     может получать любой объект, реализующий интерфейс посетителя.
     """
     @abstractmethod
-    def accept_load_data(self, visitor: Visitor) -> None:
+    def access_get_number(self, visitor: Visitor):
         pass
