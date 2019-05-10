@@ -31,5 +31,5 @@ class Application:
             self.server.add_url_rule('/api/user/delete', view_func=admin_router.post_user_delete_by_id, methods=['POST'])
 
             self.server.add_url_rule('/api/log/read_all', view_func=admin_router.post_log_read_last, methods=['POST'])
-            self.server.add_url_rule('/api/log/read_by_user', view_func=admin_router.post_log_read_last, methods=['POST'])
+            self.server.add_url_rule('/api/log/read_by_user', view_func=admin_router.post_log_read_by_user, methods=['POST'])
 

@@ -82,4 +82,18 @@ class ControlService:
                 rv[index]['date_time'] = tmp.strftime('%d.%m.%Y %H:%M')
         return rv
 
+    @staticmethod
+    def log_read_by_user(usertoken, count):
+        logDB = LogGateway()
+        identity = decode(usertoken, secret_key, algorithms)
+        user_id = identity['identity']['id']
+        rv = logDB.read_by_user_id(user_id=user_id, count=count)
+        if rv==None:
+            return {}
+        else:
+            for (index, column) in enumerate(rv):
+                tmp = column['date_time']
+                rv[index]['date_time'] = tmp.strftime('%d.%m.%Y %H:%M')
+        return rv
+
 

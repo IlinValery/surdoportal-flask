@@ -67,4 +67,11 @@ class AdminRouter():
         result = jsonify({"data": rv})
         return result
 
+    def post_log_read_by_user(self):
+        usertoken = request.get_json()["usertoken"]
+        count = request.get_json()["count"]
+        rv = self.control_service.log_read_by_user(usertoken, count)
+        result = jsonify({"data": rv})
+        return result
+
 
