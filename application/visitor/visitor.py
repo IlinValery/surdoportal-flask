@@ -21,6 +21,10 @@ class Visitor(ABC):
     def get_discipline_number(self, element):
         pass
 
+    @abstractmethod
+    def get_teacher_number(self, element):
+        pass
+
 
 
 """

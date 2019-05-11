@@ -38,3 +38,16 @@ CREATE TABLE `surdoDB`.`discipline` (
     REFERENCES `surdoDB`.`department` (`iddepartment`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
+
+
+CREATE TABLE `surdoDB`.`teacher` (
+  `idteacher` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(145) NOT NULL,
+  `department_id` INT(11) NOT NULL,
+  PRIMARY KEY (`idteacher`),
+  INDEX `department_id_teacher_idx` (`department_id` ASC),
+  CONSTRAINT `department_id_teacher`
+    FOREIGN KEY (`department_id`)
+    REFERENCES `surdoDB`.`department` (`iddepartment`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);

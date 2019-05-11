@@ -48,3 +48,10 @@ class Application:
             self.server.add_url_rule('/api/discipline/all', view_func=data_router.get_discipline_get_all, methods=['GET'])
             self.server.add_url_rule('/api/discipline/<int:id>', view_func=data_router.get_discipline_get_by_id, methods=['GET'])
 
+            self.server.add_url_rule('/api/teacher/create', view_func=admin_router.post_teacher_add, methods=['POST'])
+            self.server.add_url_rule('/api/teacher/edit', view_func=admin_router.post_teacher_edit_by_id, methods=['POST'])
+            self.server.add_url_rule('/api/teacher/delete', view_func=admin_router.post_teacher_delete_by_id, methods=['POST'])
+
+            self.server.add_url_rule('/api/teacher/all', view_func=data_router.get_teacher_get_all, methods=['GET'])
+            self.server.add_url_rule('/api/teacher/<int:id>', view_func=data_router.get_teacher_get_by_id, methods=['GET'])
+

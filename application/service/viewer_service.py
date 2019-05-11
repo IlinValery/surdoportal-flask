@@ -1,5 +1,6 @@
 from application.gateway.department_gateway import DepartmentGateway
 from application.gateway.discipline_gateway import DisciplineGateway
+from application.gateway.teacher_gateway import TeacherGateway
 
 class ViewerService:
 
@@ -31,6 +32,21 @@ class ViewerService:
     def discipline_get_by_id(id):
         discipline_db = DisciplineGateway()
         rv = discipline_db.read_by_id(id)
+        return rv
+
+    @staticmethod
+    def teacher_get_all():
+        teacher_db = TeacherGateway()
+        rv = teacher_db.read_all()
+        if rv==None:
+            return {}
+        else:
+            return rv
+
+    @staticmethod
+    def teacher_get_by_id(id):
+        teacher_db = TeacherGateway()
+        rv = teacher_db.read_by_id(id)
         return rv
 
 

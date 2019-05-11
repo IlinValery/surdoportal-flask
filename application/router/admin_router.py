@@ -122,4 +122,27 @@ class AdminRouter():
         result = jsonify({"result": rv})
         return result
 
+    def post_teacher_add(self):
+        usertoken = str(request.get_json()['usertoken'])
+        name = str(request.get_json()['name'])
+        department_id = int(request.get_json()['department_id'])
+        result = self.control_service.teacher_add(usertoken=usertoken, name=name, department_id=department_id)
+        return jsonify({"result": result})
+
+    def post_teacher_delete_by_id(self):
+        teacher_id = int(request.get_json()["teacher_id"])
+        usertoken = str(request.get_json()["usertoken"])
+        rv = self.control_service.teacher_delete_by_id(usertoken, teacher_id)
+        result = jsonify({"result": rv})
+        return result
+
+    def post_teacher_edit_by_id(self):
+        teacher_id = str(request.get_json()["teacher_id"])
+        usertoken = str(request.get_json()['usertoken'])
+        name = str(request.get_json()['name'])
+        department_id = int(request.get_json()['department_id'])
+        rv = self.control_service.teacher_edit_by_id(usertoken=usertoken, teacher_id=teacher_id, name=name, department_id=department_id)
+        result = jsonify({"result": rv})
+        return result
+
 

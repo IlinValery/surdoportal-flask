@@ -25,3 +25,11 @@ class VisitorLastNumber(Visitor):
         cursor_output = cursor.fetchone()
         print("cur_output", cursor_output)
         return cursor_output[0]
+
+    def get_teacher_number(self, element):
+        cursor = element.connection.db.cursor()
+        request = "SELECT MAX(idteacher) FROM teacher"
+        cursor.execute(request)
+        cursor_output = cursor.fetchone()
+        print("cur_output", cursor_output)
+        return cursor_output[0]

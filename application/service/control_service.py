@@ -2,6 +2,7 @@ from application.gateway.user_gateway import UserGateway
 from application.gateway.log_gateway import LogGateway
 from application.gateway.department_gateway import DepartmentGateway
 from application.gateway.discipline_gateway import DisciplineGateway
+from application.gateway.teacher_gateway import TeacherGateway
 from werkzeug.security import generate_password_hash
 from jwt import decode
 from application.settings import secret_key, algorithms
@@ -160,4 +161,33 @@ class ControlService:
         rv = discipline_db.update()
         if rv['code'] == 0:
             ControlService.write_to_log(usertoken, "discipline", str(discipline_id), "edit")
+        return rv
+
+    @staticmethod
+    def teacher_add(usertoken, name, department_id):
+        teacher_db = TeacherGateway(teacher_name=name, teacher_to_department=department_id)
+        database_result = teacher_db.create()
+        result = {
+            "code": database_result['code'],
+            "message": database_result['message'],
+        }
+        if result["code"] == 0:
+            number = teacher_db.access_get_number(visitor=VisitorLastNumber)
+            ControlService.write_to_log(usertoken, "teacher", str(number),"add")
+        return result
+
+    @staticmethod
+    def teacher_delete_by_id(usertoken, teacher_id):
+        teacher_db = TeacherGateway(teacher_id=teacher_id)
+        rv = teacher_db.delete()
+        if rv['code'] == 0:
+            ControlService.write_to_log(usertoken, "teacher", str(teacher_id), "delete")
+        return rv
+
+    @staticmethod
+    def teacher_edit_by_id(usertoken, teacher_id, name, department_id):
+        teacher_db = TeacherGateway(teacher_id=teacher_id, teacher_name=name, teacher_to_department=department_id)
+        rv = teacher_db.update()
+        if rv['code'] == 0:
+            ControlService.write_to_log(usertoken, "teacher", str(teacher_id), "edit")
         return rv
