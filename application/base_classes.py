@@ -163,10 +163,6 @@ class DisciplineBase(ABC):
         pass
 
     @abstractmethod
-    def read_by_department(self, department_id):
-        pass
-
-    @abstractmethod
     def update(self):
         pass
 

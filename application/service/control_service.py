@@ -1,6 +1,7 @@
 from application.gateway.user_gateway import UserGateway
 from application.gateway.log_gateway import LogGateway
 from application.gateway.department_gateway import DepartmentGateway
+from application.gateway.discipline_gateway import DisciplineGateway
 from werkzeug.security import generate_password_hash
 from jwt import decode
 from application.settings import secret_key, algorithms
@@ -132,3 +133,31 @@ class ControlService:
             ControlService.write_to_log(usertoken, "department", str(department_id), "edit")
         return rv
 
+    @staticmethod
+    def discipline_add(usertoken, name, semester, department_id):
+        discipline_db = DisciplineGateway(discipline_name=name, discipline_semester=semester, discipline_to_department=department_id)
+        database_result = discipline_db.create()
+        result = {
+            "code": database_result['code'],
+            "message": database_result['message'],
+        }
+        if result["code"] == 0:
+            number = discipline_db.access_get_number(visitor=VisitorLastNumber)
+            ControlService.write_to_log(usertoken, "discipline", str(number),"add")
+        return result
+
+    @staticmethod
+    def discipline_delete_by_id(usertoken, discipline_id):
+        discipline_db = DisciplineGateway(discipline_id=discipline_id)
+        rv = discipline_db.delete()
+        if rv['code'] == 0:
+            ControlService.write_to_log(usertoken, "discipline", str(discipline_id), "delete")
+        return rv
+
+    @staticmethod
+    def discipline_edit_by_id(usertoken, discipline_id, name, semester, department_id):
+        discipline_db = DisciplineGateway(discipline_id=discipline_id, discipline_name=name, discipline_semester=semester, discipline_to_department=department_id)
+        rv = discipline_db.update()
+        if rv['code'] == 0:
+            ControlService.write_to_log(usertoken, "discipline", str(discipline_id), "edit")
+        return rv

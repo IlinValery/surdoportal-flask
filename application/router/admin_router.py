@@ -97,4 +97,29 @@ class AdminRouter():
         result = jsonify({"result": rv})
         return result
 
+    def post_discipline_add(self):
+        usertoken = str(request.get_json()['usertoken'])
+        name = str(request.get_json()['name'])
+        semester = int(request.get_json()['semester'])
+        department_id = int(request.get_json()['department_id'])
+        result = self.control_service.discipline_add(usertoken=usertoken, name=name, semester=semester, department_id=department_id)
+        return jsonify({"result": result})
+
+    def post_discipline_delete_by_id(self):
+        discipline_id = int(request.get_json()["discipline_id"])
+        usertoken = str(request.get_json()["usertoken"])
+        rv = self.control_service.discipline_delete_by_id(usertoken, discipline_id)
+        result = jsonify({"result": rv})
+        return result
+
+    def post_discipline_edit_by_id(self):
+        discipline_id = str(request.get_json()["discipline_id"])
+        usertoken = str(request.get_json()['usertoken'])
+        name = str(request.get_json()['name'])
+        semester = int(request.get_json()['semester'])
+        department_id = int(request.get_json()['department_id'])
+        rv = self.control_service.discipline_edit_by_id(usertoken=usertoken, discipline_id=discipline_id, name=name, semester=semester, department_id=department_id)
+        result = jsonify({"result": rv})
+        return result
+
 

@@ -24,3 +24,17 @@ CREATE TABLE `surdoDB`.`log` (
   `element` INT(11) NOT NULL,
   `action` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idlog`));
+
+
+CREATE TABLE `surdoDB`.`discipline` (
+  `iddiscipline` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(225) NOT NULL,
+  `semester` INT NOT NULL,
+  `department_id` INT(11) NOT NULL,
+  PRIMARY KEY (`iddiscipline`),
+  INDEX `department_id_fk` (`department_id` ASC),
+  CONSTRAINT `department_id_fk`
+    FOREIGN KEY (`department_id`)
+    REFERENCES `surdoDB`.`department` (`iddepartment`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
