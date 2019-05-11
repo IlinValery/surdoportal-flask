@@ -9,7 +9,7 @@ class TeacherGateway(TeacherBase, VisitorComponent):
 
     def create(self):
         cursor = self.connection.db.cursor()
-        request = "INSERT INTO teacher (name, department_id) VALUES (%s, %s, %s)"
+        request = "INSERT INTO teacher (name, department_id) VALUES (%s, %s)"
         data = (self.name, self.department)
         try:
             cursor.execute(request, data)
