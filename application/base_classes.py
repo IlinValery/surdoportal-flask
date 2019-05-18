@@ -9,47 +9,19 @@ class UserBase(ABC):
         self.password = user_pass
         self.is_superuser = user_su
 
-    @abstractmethod
-    def create(self):
-        pass
-
-    @abstractmethod
-    def read_all(self):
-        pass
-
-    @abstractmethod
-    def read_by_id(self, user_id):
-        pass
-
-    @abstractmethod
-    def read_by_email(self, user_email):
-        pass
-
-    @abstractmethod
-    def update_fields(self):
-        pass
-
-    @abstractmethod
-    def update_password(self):
-        pass
-
-    @abstractmethod
-    def delete(self):
-        pass
-
 
 class TermBase(ABC):
     def __init__(self, term_id=int(), term_caption=str(), term_description=str(), term_lesson=int(), term_teacher=int(),
-                 term_discipline=int(), term_image=str(), term_creator=int(), term_changes=str(), term_is_shown=0):
+                 term_discipline=int(), term_image=str(), term_creator=int(), term_changed=str(), term_is_shown=0):
         self.id = term_id
         self.caption = term_caption
         self.description = term_description
         self.lesson = term_lesson
         self.teacher = term_teacher
         self.discipline = term_discipline
-        self.image = term_image
+        self.image_path = term_image
         self.creator = term_creator
-        self.changes = term_changes
+        self.changed = term_changed
         self.is_shown = term_is_shown
 
     @abstractmethod
@@ -117,30 +89,6 @@ class TeacherBase(ABC):
         self.name = teacher_name
         self.department = teacher_to_department
 
-    @abstractmethod
-    def create(self):
-        pass
-
-    @abstractmethod
-    def read_all(self):
-        pass
-
-    @abstractmethod
-    def read_by_id(self, teacher_id):
-        pass
-
-    @abstractmethod
-    def read_by_department(self, department_id):
-        pass
-
-    @abstractmethod
-    def update(self):
-        pass
-
-    @abstractmethod
-    def delete(self):
-        pass
-
 
 class DisciplineBase(ABC):
     def __init__(self, discipline_id=None, discipline_name=str(), discipline_semester=int(),
@@ -150,25 +98,6 @@ class DisciplineBase(ABC):
         self.semester = discipline_semester
         self.department = discipline_to_department
 
-    @abstractmethod
-    def create(self):
-        pass
-
-    @abstractmethod
-    def read_all(self):
-        pass
-
-    @abstractmethod
-    def read_by_id(self, discipline_id):
-        pass
-
-    @abstractmethod
-    def update(self):
-        pass
-
-    @abstractmethod
-    def delete(self):
-        pass
 
 
 class DepartmentBase(ABC):
@@ -176,26 +105,6 @@ class DepartmentBase(ABC):
         self.id = department_id
         self.caption = department_name
         self.initials = department_initials
-
-    @abstractmethod
-    def create(self):
-        pass
-
-    @abstractmethod
-    def read_all(self):
-        pass
-
-    @abstractmethod
-    def read_by_id(self, discipline_id):
-        pass
-
-    @abstractmethod
-    def update(self):
-        pass
-
-    @abstractmethod
-    def delete(self):
-        pass
 
 
 class LogBase(ABC):
@@ -205,15 +114,3 @@ class LogBase(ABC):
         self.table = log_table
         self.element = log_element_id
         self.action = log_action
-
-    @abstractmethod
-    def create(self):
-        pass
-
-    @abstractmethod
-    def read_last(self, count):
-        pass
-
-    @abstractmethod
-    def read_by_user_id(self, count):
-        pass

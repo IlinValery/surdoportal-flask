@@ -51,3 +51,55 @@ CREATE TABLE `surdoDB`.`teacher` (
     REFERENCES `surdoDB`.`department` (`iddepartment`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
+
+
+CREATE TABLE `surdoDB`.`term` (
+  `idterm` INT NOT NULL AUTO_INCREMENT,
+  `caption` VARCHAR(145) NOT NULL,
+  `description` VARCHAR(500) NOT NULL,
+  `lesson` INT NOT NULL,
+  `teacher` INT(11) NOT NULL,
+  `discipline` INT(11) NOT NULL,
+  `image_path` VARCHAR(200) NOT NULL,
+  `creator` INT(11) NOT NULL,
+  `changed` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_shown` TINYINT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`idterm`));
+
+ALTER TABLE `surdoDB`.`term`
+ADD INDEX `fk_teacher_idx` (`teacher` ASC),
+ADD INDEX `fk_discipline_idx` (`discipline` ASC),
+ADD INDEX `fk_creator_idx` (`creator` ASC);
+;
+ALTER TABLE `surdoDB`.`term`
+ADD CONSTRAINT `fk_teacher`
+  FOREIGN KEY (`teacher`)
+  REFERENCES `surdoDB`.`teacher` (`idteacher`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+ADD CONSTRAINT `fk_discipline`
+  FOREIGN KEY (`discipline`)
+  REFERENCES `surdoDB`.`discipline` (`iddiscipline`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+ADD CONSTRAINT `fk_creator`
+  FOREIGN KEY (`creator`)
+  REFERENCES `surdoDB`.`user` (`iduser`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;
+
+
+
+CREATE TABLE `surdoDB`.`media` (
+  `idmedia` INT NOT NULL AUTO_INCREMENT,
+  `type` INT NOT NULL,
+  `youtube_id` VARCHAR(45) NOT NULL,
+  `term` INT(11) NOT NULL,
+  PRIMARY KEY (`idmedia`),
+  INDEX `fk_term_idx` (`term` ASC),
+  CONSTRAINT `fk_term`
+    FOREIGN KEY (`term`)
+    REFERENCES `surdoDB`.`term` (`idterm`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
