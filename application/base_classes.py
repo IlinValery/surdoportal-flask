@@ -24,34 +24,6 @@ class TermBase(ABC):
         self.changed = term_changed
         self.is_shown = term_is_shown
 
-    @abstractmethod
-    def create(self):
-        pass
-
-    @abstractmethod
-    def read_all(self):
-        pass
-
-    @abstractmethod
-    def read_by_id(self, term_id):
-        pass
-
-    @abstractmethod
-    def read_by_caption(self, term_caption):
-        pass
-
-    @abstractmethod
-    def read_by_department(self, term_caption):
-        pass
-
-    @abstractmethod
-    def update(self):
-        pass
-
-    @abstractmethod
-    def delete(self):
-        pass
-
 
 class MediaBase(ABC):
     """ Class for term's video media content

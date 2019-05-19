@@ -12,11 +12,3 @@ class DatabaseConnection:
             charset="utf8",
 
         )
-
-
-
-# app.config["MYSQL_USER"] = "surdo_user"
-# app.config["MYSQL_PASSWORD"] = "UserPass123)"
-# app.config["MYSQL_DB"] = "surdoDB"
-# app.config["MYSQL_CURSORCLASS"] = "DictCursor"
-# app.config["JWT_SECRET_KEY"] = "jmTVPowuEd4YPRbPMDySmfhXYuczUb4F"

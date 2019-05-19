@@ -3,11 +3,13 @@ from flask_jwt_extended import get_jwt_identity
 
 from application.service.auth_service import AuthService
 from application.service.control_service import ControlService
+from application.service.editor_service import EditorService
 
 
 class AdminRouter():
     auth_service = AuthService()
     control_service = ControlService()
+    editor_service = EditorService()
 
     def post_user_login(self):
         email = str(request.get_json()["email"])
@@ -144,5 +146,14 @@ class AdminRouter():
         rv = self.control_service.teacher_edit_by_id(usertoken=usertoken, teacher_id=teacher_id, name=name, department_id=department_id)
         result = jsonify({"result": rv})
         return result
+
+    def post_term_add(self):
+        usertoken = str(request.get_json()['usertoken'])
+        caption = str(request.get_json()['caption'])
+        description = str(request.get_json()['description'])
+        image_path = str(request.get_json()['image_path'])
+        discipline_id = int(request.get_json()['discipline_id'])
+        result = self.editor_service.term_add()
+        return jsonify({"result": result})
 
 

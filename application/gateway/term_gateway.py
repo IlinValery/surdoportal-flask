@@ -18,11 +18,36 @@ class TermGateway(TermBase, VisitorComponent):
         except IntegrityError:
             return {"code": 1, "message": "Error to create term"}
 
-    def read_all(self, start=0, end=100, for_public=True, only_invalided=True):
+    def read_for_editor(self, start=0, end=100, only_invalided=False, discipline_id=0, user_id=0):
         cursor = self.connection.db.cursor()
         result = None
-        request = "SELECT * FROM term LIMIT %s,%s"
-        data = (start, end)
+        request = ""
+        data = ()
+        data_limit = (start,end)
+        if (only_invalided or discipline_id or user_id):
+            request = "SELECT * FROM term WHERE "
+            has_parameter = False
+            if only_invalided:
+                has_parameter = True
+                request += "is_shown = %s"
+                data += (1,)
+            if discipline_id!=0:
+                if has_parameter:
+                    request+=', '
+                has_parameter = True
+                request += "discipline = %s"
+                data += (discipline_id,)
+            if user_id!=0:
+                if has_parameter:
+                    request+=', '
+                request += "creator = %s"
+                data += (user_id,)
+            data += data_limit
+            request+= " LIMIT %s,%s"
+        else:
+            request = "SELECT * FROM term LIMIT %s,%s"
+            data = data_limit
+
         cursor.execute(request, data)
         cursor_output = cursor.fetchall()
         if cursor_output:
@@ -34,15 +59,6 @@ class TermGateway(TermBase, VisitorComponent):
                     tmp[fields[index][0]] = column
                 result.append(tmp)
         return result
-
-    def read_by_discipline(self, discipline_id):
-        #TODO Read by discipline (many terms)
-        pass
-
-    def read_by_creator(self, user_id):
-        #TODO Read by creator (many terms)
-        pass
-
 
     def read_by_id(self, term_id):
         cursor = self.connection.db.cursor()
