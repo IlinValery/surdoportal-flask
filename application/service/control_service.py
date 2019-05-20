@@ -3,6 +3,7 @@ from application.gateway.log_gateway import LogGateway
 from application.gateway.department_gateway import DepartmentGateway
 from application.gateway.discipline_gateway import DisciplineGateway
 from application.gateway.teacher_gateway import TeacherGateway
+from application.gateway.term_gateway import TermGateway
 from werkzeug.security import generate_password_hash
 from jwt import decode
 from application.settings import secret_key, algorithms
@@ -191,3 +192,12 @@ class ControlService:
         if rv['code'] == 0:
             ControlService.write_to_log(usertoken, "teacher", str(teacher_id), "edit")
         return rv
+
+    @staticmethod
+    def term_delete_by_id(usertoken, term_id):
+        term_db = TermGateway(term_id=term_id)
+        rv = term_db.delete()
+        if rv['code'] == 0:
+            ControlService.write_to_log(usertoken, "term", str(term_id), "delete")
+        return rv
+

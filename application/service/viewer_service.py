@@ -1,6 +1,7 @@
 from application.gateway.department_gateway import DepartmentGateway
 from application.gateway.discipline_gateway import DisciplineGateway
 from application.gateway.teacher_gateway import TeacherGateway
+from application.gateway.media_gateway import MediaGateway
 
 class ViewerService:
 
@@ -49,4 +50,12 @@ class ViewerService:
         rv = teacher_db.read_by_id(id)
         return rv
 
+    @staticmethod
+    def media_get_by_term(term_id):
+        media_db = MediaGateway()
+        rv = media_db.read_by_term(term_id)
+        if rv==None:
+            return {}
+        else:
+            return rv
 
