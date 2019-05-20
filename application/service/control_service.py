@@ -4,8 +4,8 @@ from application.gateway.department_gateway import DepartmentGateway
 from application.gateway.discipline_gateway import DisciplineGateway
 from application.gateway.teacher_gateway import TeacherGateway
 from application.gateway.term_gateway import TermGateway
-from werkzeug.security import generate_password_hash
 from jwt import decode
+from werkzeug.security import generate_password_hash
 from application.settings import secret_key, algorithms
 from application.visitor.visit_last_number import VisitorLastNumber
 
@@ -20,7 +20,7 @@ class ControlService:
         identity = decode(usertoken, secret_key, algorithms)
         user_id = identity['identity']['id']
         log = LogGateway(log_user_id=user_id, log_table=table, log_element_id=element_id, log_action=action).create()
-        pass
+
 
 
     @staticmethod

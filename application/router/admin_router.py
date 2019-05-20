@@ -147,6 +147,10 @@ class AdminRouter():
         result = jsonify({"result": rv})
         return result
 
+    def get_disciplines_users(self):
+        result = self.editor_service.disciplines_users_for_term_editor()
+        return jsonify({"result": result})
+
     def post_term_add(self):
         usertoken = str(request.get_json()['usertoken'])
         caption = str(request.get_json()['caption'])
@@ -157,7 +161,7 @@ class AdminRouter():
         lesson = int(request.get_json()['lesson'])
         image_path = str(request.get_json()['image_path'])
         result = self.editor_service.term_add(usertoken=usertoken, caption=caption, description=description,
-                                              discipline=discipline_id, teacher=teacher_id, creator=creator_id,
+                                              discipline=discipline_id, teacher=teacher_id,
                                               lesson=lesson, image_path=image_path)
         return jsonify({"result": result})
 
