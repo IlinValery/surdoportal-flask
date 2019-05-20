@@ -2,6 +2,7 @@ from application.gateway.department_gateway import DepartmentGateway
 from application.gateway.discipline_gateway import DisciplineGateway
 from application.gateway.teacher_gateway import TeacherGateway
 from application.gateway.media_gateway import MediaGateway
+from application.gateway.term_gateway import TermGateway
 
 class ViewerService:
 
@@ -58,4 +59,13 @@ class ViewerService:
             return {}
         else:
             return rv
+
+    @staticmethod
+    def term_get_count():
+        term_db = TermGateway()
+        rv = term_db.read_for_view()
+        if rv==None:
+            return 0
+        else:
+            return len(rv)
 

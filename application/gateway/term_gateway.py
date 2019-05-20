@@ -30,16 +30,16 @@ class TermGateway(TermBase, VisitorComponent):
             if only_invalided:
                 has_parameter = True
                 request += "is_shown = %s"
-                data += (1,)
+                data += (0,)
             if discipline_id!=0:
                 if has_parameter:
-                    request+=', '
+                    request+=' AND '
                 has_parameter = True
                 request += "discipline = %s"
                 data += (discipline_id,)
             if user_id!=0:
                 if has_parameter:
-                    request+=', '
+                    request+=' AND '
                 request += "creator = %s"
                 data += (user_id,)
             data += data_limit
@@ -47,7 +47,8 @@ class TermGateway(TermBase, VisitorComponent):
         else:
             request = "SELECT * FROM term LIMIT %s,%s"
             data = data_limit
-
+        print(request)
+        print(data)
         cursor.execute(request, data)
         cursor_output = cursor.fetchall()
         if cursor_output:
@@ -75,7 +76,7 @@ class TermGateway(TermBase, VisitorComponent):
                 data += (discipline_id,)
             if phrase!="":
                 if has_parameter:
-                    request+=', '
+                    request+=' AND '
                 request += "caption LIKE '%%s%'"
                 data += (phrase,)
             data += data_limit

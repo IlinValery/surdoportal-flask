@@ -64,6 +64,7 @@ class EditorService:
             ControlService.write_to_log(usertoken, "term", str(number),"add")
         return result
 
+
     @staticmethod
     def term_edit_by_id(usertoken, term_id,  caption, description, discipline, teacher, creator, lesson, image_path, is_shown = 0):
         term_db = TermGateway(term_id=term_id, term_caption=caption, term_description=description, term_discipline=discipline,
@@ -105,7 +106,7 @@ class EditorService:
 
     #todo by params
     @staticmethod
-    def teacher_get_by_params(page=0, only_invalided=0, discipline_id=0, user_id=0):
+    def term_get_by_params(page=0, only_invalided=0, discipline_id=0, user_id=0):
         on_page = 40
         start = on_page*(page-1)
         end = start+on_page
@@ -115,4 +116,6 @@ class EditorService:
             return {}
         else:
             return rv
+
+
 
