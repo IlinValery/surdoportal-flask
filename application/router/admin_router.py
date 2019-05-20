@@ -151,9 +151,70 @@ class AdminRouter():
         usertoken = str(request.get_json()['usertoken'])
         caption = str(request.get_json()['caption'])
         description = str(request.get_json()['description'])
-        image_path = str(request.get_json()['image_path'])
         discipline_id = int(request.get_json()['discipline_id'])
-        result = self.editor_service.term_add()
+        teacher_id = int(request.get_json()['teacher_id'])
+        creator_id = int(request.get_json()['creator_id'])
+        lesson = int(request.get_json()['lesson'])
+        image_path = str(request.get_json()['image_path'])
+        result = self.editor_service.term_add(usertoken=usertoken, caption=caption, description=description,
+                                              discipline=discipline_id, teacher=teacher_id, creator=creator_id,
+                                              lesson=lesson, image_path=image_path)
         return jsonify({"result": result})
 
+    #TODO
+    def post_term_delete_by_id(self):
+        teacher_id = int(request.get_json()["teacher_id"])
+        usertoken = str(request.get_json()["usertoken"])
+        rv = self.control_service.teacher_delete_by_id(usertoken, teacher_id)
+        result = jsonify({"result": rv})
+        return result
 
+    def post_term_edit_by_id(self):
+        teacher_id = str(request.get_json()["teacher_id"])
+        usertoken = str(request.get_json()['usertoken'])
+        name = str(request.get_json()['name'])
+        department_id = int(request.get_json()['department_id'])
+        rv = self.control_service.teacher_edit_by_id(usertoken=usertoken, teacher_id=teacher_id, name=name, department_id=department_id)
+        result = jsonify({"result": rv})
+        return result
+
+    def post_term_validate_by_id(self):
+        teacher_id = str(request.get_json()["teacher_id"])
+        usertoken = str(request.get_json()['usertoken'])
+        name = str(request.get_json()['name'])
+        department_id = int(request.get_json()['department_id'])
+        rv = self.control_service.teacher_edit_by_id(usertoken=usertoken, teacher_id=teacher_id, name=name, department_id=department_id)
+        result = jsonify({"result": rv})
+        return result
+
+    def post_term_view(self):
+        teacher_id = str(request.get_json()["teacher_id"])
+        usertoken = str(request.get_json()['usertoken'])
+        name = str(request.get_json()['name'])
+        department_id = int(request.get_json()['department_id'])
+        rv = self.control_service.teacher_edit_by_id(usertoken=usertoken, teacher_id=teacher_id, name=name, department_id=department_id)
+        result = jsonify({"result": rv})
+        return result
+
+    def post_media_add(self):
+        usertoken = str(request.get_json()['usertoken'])
+        name = str(request.get_json()['name'])
+        department_id = int(request.get_json()['department_id'])
+        result = self.control_service.teacher_add(usertoken=usertoken, name=name, department_id=department_id)
+        return jsonify({"result": result})
+
+    def post_media_delete_by_id(self):
+        teacher_id = int(request.get_json()["teacher_id"])
+        usertoken = str(request.get_json()["usertoken"])
+        rv = self.control_service.teacher_delete_by_id(usertoken, teacher_id)
+        result = jsonify({"result": rv})
+        return result
+
+    def post_media_edit_by_id(self):
+        teacher_id = str(request.get_json()["teacher_id"])
+        usertoken = str(request.get_json()['usertoken'])
+        name = str(request.get_json()['name'])
+        department_id = int(request.get_json()['department_id'])
+        rv = self.control_service.teacher_edit_by_id(usertoken=usertoken, teacher_id=teacher_id, name=name, department_id=department_id)
+        result = jsonify({"result": rv})
+        return result

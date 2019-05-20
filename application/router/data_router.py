@@ -46,4 +46,18 @@ class DataRouter:
         result = jsonify({"data": rv})
         return result
 
+    #TODO here
+    def get_term_get_by_id(self, id):
+        rv = self.editor_service.teacher_get_by_id(id)
+        result = jsonify({"data": rv})
+        return result
 
+    def post_term_get_by_params(self):
+        rv = self.editor_service.teacher_get_by_id(id)
+        result = jsonify({"data": rv})
+        return result
+
+    def get_media_get_by_term(self, term_id):
+        rv = self.editor_service.teacher_get_by_id(id)
+        result = jsonify({"data": rv})
+        return result

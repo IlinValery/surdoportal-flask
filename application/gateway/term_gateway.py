@@ -60,6 +60,42 @@ class TermGateway(TermBase, VisitorComponent):
                 result.append(tmp)
         return result
 
+    def read_for_view(self, start=0, end=100, discipline_id=0, phrase=""):
+        cursor = self.connection.db.cursor()
+        result = None
+        request = ""
+        data = ()
+        data_limit = (start,end)
+        if (discipline_id or phrase!=""):
+            request = "SELECT * FROM term WHERE "
+            has_parameter = False
+            if discipline_id!=0:
+                has_parameter = True
+                request += "discipline = %s"
+                data += (discipline_id,)
+            if phrase!="":
+                if has_parameter:
+                    request+=', '
+                request += "caption LIKE '%%s%'"
+                data += (phrase,)
+            data += data_limit
+            request+= " LIMIT %s,%s"
+        else:
+            request = "SELECT * FROM term WHERE is_shown = 1 LIMIT %s,%s"
+            data = data_limit
+
+        cursor.execute(request, data)
+        cursor_output = cursor.fetchall()
+        if cursor_output:
+            fields = cursor.description
+            result = []
+            for row in cursor_output:
+                tmp = {}
+                for (index, column) in enumerate(row):
+                    tmp[fields[index][0]] = column
+                result.append(tmp)
+        return result
+
     def read_by_id(self, term_id):
         cursor = self.connection.db.cursor()
         result = None
@@ -73,20 +109,30 @@ class TermGateway(TermBase, VisitorComponent):
         return result
 
     def update(self):
-        #TODO Update term with all params
         cursor = self.connection.db.cursor()
         result = None
-        request = "UPDATE term SET name = %s, department_id = %s WHERE (idteacher = %s)"
-        data = (self.name, self.department, self.id)
+        request = "UPDATE term SET caption = %s, description = %s, lesson= %s, teacher= %s, discipline= %s, image_path= %s, creator= %s, is_shown= %s WHERE (idterm = %s)"
+        data = (self.caption, self.description, self.lesson, self.teacher, self.discipline, self.image_path, self.creator, self.is_shown, self.id)
+
         try:
             cursor.execute(request, data)
             self.connection.db.commit()
-            return {"code": 0, "message": "Department was changed successfully"}
+            return {"code": 0, "message": "Term was changed successfully"}
         except IntegrityError:
-            return {"code": 1, "message": "Error to change department"}
+            return {"code": 1, "message": "Error to change term"}
 
     def update_validation(self):
-        #TODO (its empty validation for term)
+        cursor = self.connection.db.cursor()
+        result = None
+        request = "UPDATE term SET is_shown= %s WHERE (idterm = %s)"
+        data = (self.is_shown, self.id)
+
+        try:
+            cursor.execute(request, data)
+            self.connection.db.commit()
+            return {"code": 0, "message": "Term validation was changed successfully"}
+        except IntegrityError:
+            return {"code": 1, "message": "Error to change term validation"}
         pass
 
     def delete(self):

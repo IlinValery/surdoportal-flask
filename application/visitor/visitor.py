@@ -1,6 +1,4 @@
 from abc import ABC, abstractmethod
-# from application.gateway.user_gateway import UserGateway
-# from application.gateway.department_gateway import DepartmentGateway
 
 class Visitor(ABC):
 
@@ -10,7 +8,7 @@ class Visitor(ABC):
     определить конкретный класс компонента, с которым он имеет дело.
     """
     @abstractmethod
-    def get_user_number(self, element): #UserGateway
+    def get_user_number(self, element):
         pass
 
     @abstractmethod
@@ -29,11 +27,7 @@ class Visitor(ABC):
     def get_term_number(self, element):
         pass
 
+    @abstractmethod
+    def get_media_number(self, element):
+        pass
 
-
-"""
-Еще нужно добавить наследие в UserGateway и LogGateway от VisitorComponent
-Далее прописать функцию accept_load_data(self, visitor: Visitor),
-где вызвать visitor.load_user_data (у UserGateway) и visitor.load_log_data (у LogGateway)
-
-"""

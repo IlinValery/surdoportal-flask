@@ -34,26 +34,6 @@ class MediaBase(ABC):
         self.youtube_id = media_youtube_id
         self.to_term = media_to_term
 
-    @abstractmethod
-    def create(self):
-        pass
-
-    @abstractmethod
-    def read_by_id(self, media_id):
-        pass
-
-    @abstractmethod
-    def read_by_term(self, media_to_term):
-        pass
-
-    @abstractmethod
-    def update(self):
-        pass
-
-    @abstractmethod
-    def delete(self, media_id):
-        pass
-
 
 class TeacherBase(ABC):
     def __init__(self, teacher_id=None, teacher_name=str(), teacher_to_department=int()):

@@ -33,7 +33,6 @@ class Application:
             self.server.add_url_rule('/api/log/read_all', view_func=admin_router.post_log_read_last, methods=['POST'])
             self.server.add_url_rule('/api/log/read_by_user', view_func=admin_router.post_log_read_by_user, methods=['POST'])
 
-
             self.server.add_url_rule('/api/department/create', view_func=admin_router.post_department_add, methods=['POST'])
             self.server.add_url_rule('/api/department/edit', view_func=admin_router.post_department_edit_by_id, methods=['POST'])
             self.server.add_url_rule('/api/department/delete', view_func=admin_router.post_department_delete_by_id, methods=['POST'])
@@ -55,3 +54,17 @@ class Application:
             self.server.add_url_rule('/api/teacher/all', view_func=data_router.get_teacher_get_all, methods=['GET'])
             self.server.add_url_rule('/api/teacher/<int:id>', view_func=data_router.get_teacher_get_by_id, methods=['GET'])
 
+            self.server.add_url_rule('/api/term/create', view_func=admin_router.post_term_add, methods=['POST'])
+            self.server.add_url_rule('/api/term/edit', view_func=admin_router.post_term_edit_by_id, methods=['POST'])
+            self.server.add_url_rule('/api/term/view_edit', view_func=admin_router.post_term_view, methods=['POST'])
+            self.server.add_url_rule('/api/term/delete', view_func=admin_router.post_term_delete_by_id, methods=['POST'])
+
+            self.server.add_url_rule('/api/media/create', view_func=admin_router.post_media_add, methods=['POST'])
+            self.server.add_url_rule('/api/media/edit', view_func=admin_router.post_media_edit_by_id, methods=['POST'])
+            self.server.add_url_rule('/api/media/delete', view_func=admin_router.post_media_delete_by_id, methods=['POST'])
+
+            self.server.add_url_rule('/api/term/validate', view_func=admin_router.post_term_validate_by_id, methods=['POST'])
+
+            self.server.add_url_rule('/api/term/view', view_func=data_router.post_term_get_by_params, methods=['POST'])
+            self.server.add_url_rule('/api/term/<int:id>', view_func=data_router.get_term_get_by_id, methods=['GET'])
+            self.server.add_url_rule('/api/media/term/<int:term_id>', view_func=data_router.get_media_get_by_term, methods=['GET'])
