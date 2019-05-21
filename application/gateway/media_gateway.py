@@ -22,7 +22,7 @@ class MediaGateway(MediaBase, VisitorComponent):
     def read_by_term(self, term_id):
         cursor = self.connection.db.cursor()
         result = None
-        request = "SELECT * FROM media WHERE term = %s"
+        request = "SELECT * FROM media WHERE term = %s order by type"
         data = (term_id,)
         cursor.execute(request, data)
         cursor_output = cursor.fetchall()
@@ -39,7 +39,7 @@ class MediaGateway(MediaBase, VisitorComponent):
     def update(self):
         cursor = self.connection.db.cursor()
         result = None
-        request = "UPDATE term SET type = %s, youtube_id = %s WHERE (idmedia = %s)"
+        request = "UPDATE media SET type = %s, youtube_id = %s WHERE (idmedia = %s)"
         data = (self.types[self.type], self.youtube_id, self.id)
         try:
             cursor.execute(request, data)

@@ -52,15 +52,6 @@ class ViewerService:
         return rv
 
     @staticmethod
-    def media_get_by_term(term_id):
-        media_db = MediaGateway()
-        rv = media_db.read_by_term(term_id)
-        if rv==None:
-            return {}
-        else:
-            return rv
-
-    @staticmethod
     def term_get_count():
         term_db = TermGateway()
         rv = term_db.read_for_view()
@@ -68,4 +59,78 @@ class ViewerService:
             return 0
         else:
             return len(rv)
+
+    @staticmethod
+    def term_get_by_id(id):
+        term_db = TermGateway()
+        terms = term_db.read_by_id(id)
+        teacher_db = TeacherGateway()
+        teachers = teacher_db.read_all()
+        if teachers==None:
+            teachers = {}
+
+        disciplines = {}
+        department_db = DepartmentGateway()
+        departments = department_db.read_all()
+        if departments==None:
+            departments = {}
+        else:
+            discipline_db = DisciplineGateway()
+            disciplines = discipline_db.read_all()
+            if disciplines==None:
+                disciplines = {}
+            else:
+                for (index, row_discipline) in enumerate(disciplines):
+                    department_id = row_discipline['department_id']
+                    department = ''
+                    for (index, row) in enumerate(departments):
+                        if row['iddepartment']==department_id:
+                            department = row['initials']
+                    row_discipline['department_id'] = department
+
+
+        if terms==None:
+            return {"term": {}, "media": {}}
+        else:
+            media_db = MediaGateway()
+            rv = media_db.read_by_term(id)
+            if rv == None:
+                rv = {}
+            return {"term": terms, "media": rv, "disciplines": disciplines, "teachers": teachers}
+
+    @staticmethod
+    def term_get_filters():
+        disciplines = {}
+        department_db = DepartmentGateway()
+        departments = department_db.read_all()
+        if departments==None:
+            departments = {}
+        else:
+            discipline_db = DisciplineGateway()
+            disciplines = discipline_db.read_all()
+            if disciplines==None:
+                disciplines = {}
+            else:
+                for (index, row_discipline) in enumerate(disciplines):
+                    department_id = row_discipline['department_id']
+                    department = ''
+                    for (index, row) in enumerate(departments):
+                        if row['iddepartment']==department_id:
+                            department = row
+                    row_discipline['department_id'] = department
+
+
+        return {"departments": departments, "disciplines": disciplines}
+
+    @staticmethod
+    def term_view(discipline_id, phrase):
+        on_page = 80
+        start = 0
+        end = on_page
+        term_db = TermGateway()
+        rv = term_db.read_for_view(start, end, discipline_id, phrase)
+        if rv==None:
+            return {}
+        else:
+            return rv
 

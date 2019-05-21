@@ -73,5 +73,4 @@ class DepartmentGateway(DepartmentBase, VisitorComponent):
             return {"code": 1, "message": "Something went wrong"}
 
     def access_get_number(self, visitor: Visitor):
-        print("we are here!")
         return visitor.get_department_number(self, element=self)

@@ -4,6 +4,7 @@ from application.gateway.department_gateway import DepartmentGateway
 from application.gateway.discipline_gateway import DisciplineGateway
 from application.gateway.teacher_gateway import TeacherGateway
 from application.gateway.term_gateway import TermGateway
+from application.gateway.media_gateway import MediaGateway
 from jwt import decode
 from werkzeug.security import generate_password_hash
 from application.settings import secret_key, algorithms
@@ -115,7 +116,6 @@ class ControlService:
         }
         if result["code"] == 0:
             number = depatment_db.access_get_number(visitor=VisitorLastNumber)
-            print(number)
             ControlService.write_to_log(usertoken, "department", str(number),"add")
         return result
 
@@ -201,3 +201,20 @@ class ControlService:
             ControlService.write_to_log(usertoken, "term", str(term_id), "delete")
         return rv
 
+    @staticmethod
+    def media_delete_by_id(usertoken, media_id, term):
+        term_db = TermGateway(term_id=term, term_is_shown=0)
+        term_db.update_validation()
+        media_db = MediaGateway(media_id=media_id)
+        rv = media_db.delete()
+        if rv['code'] == 0:
+            ControlService.write_to_log(usertoken, "media", str(media_id), "delete")
+        return rv
+
+    @staticmethod
+    def term_validate_by_id(usertoken, term_id, is_shown):
+        term_db = TermGateway(term_id=term_id, term_is_shown=is_shown)
+        rv = term_db.update_validation()
+        if rv['code'] == 0:
+            ControlService.write_to_log(usertoken, "term", str(term_id), "validate_{0}".format(is_shown))
+        return rv

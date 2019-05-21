@@ -43,12 +43,10 @@ class TermGateway(TermBase, VisitorComponent):
                 request += "creator = %s"
                 data += (user_id,)
             data += data_limit
-            request+= " LIMIT %s,%s"
+            request+= " order by is_shown ASC, changed DESC LIMIT %s,%s"
         else:
-            request = "SELECT * FROM term LIMIT %s,%s"
+            request = "SELECT * FROM term order by is_shown ASC, changed DESC LIMIT %s,%s"
             data = data_limit
-        print(request)
-        print(data)
         cursor.execute(request, data)
         cursor_output = cursor.fetchall()
         if cursor_output:
@@ -68,7 +66,7 @@ class TermGateway(TermBase, VisitorComponent):
         data = ()
         data_limit = (start,end)
         if (discipline_id or phrase!=""):
-            request = "SELECT * FROM term WHERE "
+            request = "SELECT * FROM term WHERE is_shown = 1 AND "
             has_parameter = False
             if discipline_id!=0:
                 has_parameter = True
@@ -77,14 +75,14 @@ class TermGateway(TermBase, VisitorComponent):
             if phrase!="":
                 if has_parameter:
                     request+=' AND '
-                request += "caption LIKE '%%s%'"
-                data += (phrase,)
+                request += "LOWER(caption) LIKE LOWER(%s)"
+                phrase_formated = "%"+phrase+"%"
+                data += (phrase_formated,)
             data += data_limit
-            request+= " LIMIT %s,%s"
+            request+= " ORDER BY lesson LIMIT %s,%s"
         else:
-            request = "SELECT * FROM term WHERE is_shown = 1 LIMIT %s,%s"
+            request = "SELECT * FROM term WHERE is_shown = 1 ORDER BY lesson LIMIT %s,%s"
             data = data_limit
-
         cursor.execute(request, data)
         cursor_output = cursor.fetchall()
         if cursor_output:
@@ -112,8 +110,8 @@ class TermGateway(TermBase, VisitorComponent):
     def update(self):
         cursor = self.connection.db.cursor()
         result = None
-        request = "UPDATE term SET caption = %s, description = %s, lesson= %s, teacher= %s, discipline= %s, image_path= %s, creator= %s, is_shown= %s WHERE (idterm = %s)"
-        data = (self.caption, self.description, self.lesson, self.teacher, self.discipline, self.image_path, self.creator, self.is_shown, self.id)
+        request = "UPDATE term SET caption = %s, description = %s, lesson= %s, teacher= %s, discipline= %s, image_path= %s, is_shown= %s WHERE (idterm = %s)"
+        data = (self.caption, self.description, self.lesson, self.teacher, self.discipline, self.image_path, self.is_shown, self.id)
 
         try:
             cursor.execute(request, data)

@@ -42,7 +42,6 @@ class EditorService:
                         if row['iddepartment']==department_id:
                             department = row['initials']
                     row_discipline['department_id'] = department
-                    print(row_discipline)
 
         return {"users": users, "disciplines": disciplines, "teachers": teachers}
 
@@ -64,47 +63,6 @@ class EditorService:
             ControlService.write_to_log(usertoken, "term", str(number),"add")
         return result
 
-
-    @staticmethod
-    def term_edit_by_id(usertoken, term_id,  caption, description, discipline, teacher, creator, lesson, image_path, is_shown = 0):
-        term_db = TermGateway(term_id=term_id, term_caption=caption, term_description=description, term_discipline=discipline,
-                              term_teacher=teacher, term_creator=creator, term_lesson=lesson, term_image=image_path,
-                              term_is_shown=is_shown)
-        rv = term_db.update()
-        if rv['code'] == 0:
-            ControlService.write_to_log(usertoken, "term", str(term_id), "edit")
-        return rv
-
-    @staticmethod
-    def media_add(usertoken, type, youtube_id, term_id):
-        media_db = MediaGateway(media_type=type, media_youtube_id=youtube_id, media_to_term=term_id)
-        database_result = media_db.create()
-        result = {
-            "code": database_result['code'],
-            "message": database_result['message'],
-        }
-        if result["code"] == 0:
-            number = media_db.access_get_number(visitor=VisitorLastNumber)
-            ControlService.write_to_log(usertoken, "media", str(number), "add")
-        return result
-
-    @staticmethod
-    def media_delete_by_id(usertoken, media_id):
-        media_db = MediaGateway(media_id=media_id)
-        rv = media_db.delete()
-        if rv['code'] == 0:
-            ControlService.write_to_log(usertoken, "media", str(media_id), "delete")
-        return rv
-
-    @staticmethod
-    def media_edit_by_id(usertoken, media_id, type, youtube_id, term_id):
-        media_db = MediaGateway(media_id=media_id, media_type=type, media_youtube_id=youtube_id, media_to_term=term_id)
-        rv = media_db.update()
-        if rv['code'] == 0:
-            ControlService.write_to_log(usertoken, "media", str(media_id), "edit")
-        return rv
-
-    #todo by params
     @staticmethod
     def term_get_by_params(page=0, only_invalided=0, discipline_id=0, user_id=0):
         on_page = 40
@@ -115,7 +73,62 @@ class EditorService:
         if rv==None:
             return {}
         else:
+            user_db = UserGateway()
+            users = user_db.read_all()
+            discipline_db = DisciplineGateway()
+            disciplines = discipline_db.read_all()
+            for (index, row_term) in enumerate(rv):
+                discipline = {}
+                creator = {}
+                cur_discipline = row_term['discipline']
+                cur_user = row_term['creator']
+                for (index, row_discipline) in enumerate(disciplines):
+                    if row_discipline['iddiscipline'] == cur_discipline:
+                        discipline = row_discipline
+                for (index, row_user) in enumerate(users):
+                    if row_user['iduser'] == cur_user:
+                        creator = row_user
+
+                row_term['creator'] = creator
+                row_term['discipline'] = discipline
             return rv
+
+    @staticmethod
+    def term_edit_by_id(usertoken, term_id,  caption, description, discipline, teacher, lesson, image_path, is_shown = 0):
+        term_db = TermGateway(term_id=term_id, term_caption=caption, term_description=description, term_discipline=discipline,
+                              term_teacher=teacher, term_lesson=lesson, term_image=image_path,
+                              term_is_shown=is_shown)
+        rv = term_db.update()
+        if rv['code'] == 0:
+            ControlService.write_to_log(usertoken, "term", str(term_id), "edit")
+        return rv
+
+    @staticmethod
+    def media_add(usertoken, type, youtube_id, term_id):
+        media_db = MediaGateway(media_type=type, media_youtube_id=youtube_id, media_to_term=term_id)
+        term_db = TermGateway(term_id=term_id, term_is_shown=0)
+        term_db.update_validation()
+        database_result = media_db.create()
+        result = {
+            "code": database_result['code'],
+            "message": database_result['message'],
+        }
+        if result["code"] == 0:
+            number = media_db.access_get_number(visitor=VisitorLastNumber)
+            ControlService.write_to_log(usertoken, "media", str(number), "add")
+        return result
+
+
+    @staticmethod
+    def media_edit_by_id(usertoken, media_id, type, youtube_id, term):
+        term_db = TermGateway(term_id=term, term_is_shown=0)
+        term_db.update_validation()
+        media_db = MediaGateway(media_id=media_id, media_type=type, media_youtube_id=youtube_id)
+        rv = media_db.update()
+        if rv['code'] == 0:
+            ControlService.write_to_log(usertoken, "media", str(media_id), "edit")
+        return rv
+
 
 
 

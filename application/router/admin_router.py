@@ -179,53 +179,62 @@ class AdminRouter():
 
 
 
-
-    #TODO
     def post_term_delete_by_id(self):
-        teacher_id = int(request.get_json()["teacher_id"])
+        term_id = int(request.get_json()["term_id"])
         usertoken = str(request.get_json()["usertoken"])
-        rv = self.control_service.teacher_delete_by_id(usertoken, teacher_id)
+        rv = self.control_service.term_delete_by_id(usertoken, term_id)
         result = jsonify({"result": rv})
         return result
+
+
 
     def post_term_edit_by_id(self):
-        teacher_id = str(request.get_json()["teacher_id"])
         usertoken = str(request.get_json()['usertoken'])
-        name = str(request.get_json()['name'])
-        department_id = int(request.get_json()['department_id'])
-        rv = self.control_service.teacher_edit_by_id(usertoken=usertoken, teacher_id=teacher_id, name=name, department_id=department_id)
+        term_id = int(request.get_json()['term_id'])
+        caption = str(request.get_json()['caption'])
+        description = str(request.get_json()['description'])
+        discipline_id = int(request.get_json()['discipline_id'])
+        teacher_id = int(request.get_json()['teacher_id'])
+        lesson = int(request.get_json()['lesson'])
+        image_path = str(request.get_json()['image_path'])
+        rv = self.editor_service.term_edit_by_id(usertoken=usertoken, caption=caption, description=description,
+                                              discipline=discipline_id, teacher=teacher_id,
+                                              lesson=lesson, image_path=image_path, term_id=term_id)
         result = jsonify({"result": rv})
         return result
+
 
     def post_term_validate_by_id(self):
-        teacher_id = str(request.get_json()["teacher_id"])
+        term_id = int(request.get_json()['term_id'])
         usertoken = str(request.get_json()['usertoken'])
-        name = str(request.get_json()['name'])
-        department_id = int(request.get_json()['department_id'])
-        rv = self.control_service.teacher_edit_by_id(usertoken=usertoken, teacher_id=teacher_id, name=name, department_id=department_id)
+        is_show = int(request.get_json()['is_show'])
+        rv = self.control_service.term_validate_by_id(usertoken, term_id, is_show)
         result = jsonify({"result": rv})
         return result
 
+    def post_media_delete_by_id(self):
+        media_id = int(request.get_json()["media_id"])
+        term = int(request.get_json()["term"])
+        usertoken = str(request.get_json()["usertoken"])
+        rv = self.control_service.media_delete_by_id(usertoken, media_id,term)
+        result = jsonify({"result": rv})
+        return result
 
     def post_media_add(self):
         usertoken = str(request.get_json()['usertoken'])
-        name = str(request.get_json()['name'])
-        department_id = int(request.get_json()['department_id'])
-        result = self.control_service.teacher_add(usertoken=usertoken, name=name, department_id=department_id)
+        youtube_id = str(request.get_json()['youtube_id'])
+        type = str(request.get_json()['type'])
+        term_id = int(request.get_json()['term_id'])
+        result = self.editor_service.media_add(usertoken, type,youtube_id,term_id)
         return jsonify({"result": result})
 
-    def post_media_delete_by_id(self):
-        teacher_id = int(request.get_json()["teacher_id"])
-        usertoken = str(request.get_json()["usertoken"])
-        rv = self.control_service.teacher_delete_by_id(usertoken, teacher_id)
-        result = jsonify({"result": rv})
-        return result
 
     def post_media_edit_by_id(self):
-        teacher_id = str(request.get_json()["teacher_id"])
         usertoken = str(request.get_json()['usertoken'])
-        name = str(request.get_json()['name'])
-        department_id = int(request.get_json()['department_id'])
-        rv = self.control_service.teacher_edit_by_id(usertoken=usertoken, teacher_id=teacher_id, name=name, department_id=department_id)
+        youtube_id = str(request.get_json()['youtube_id'])
+        type = str(request.get_json()['type'])
+        media_id = int(request.get_json()['media_id'])
+        term = int(request.get_json()['term'])
+        rv = self.editor_service.media_edit_by_id(usertoken, media_id, type, youtube_id, term)
         result = jsonify({"result": rv})
         return result

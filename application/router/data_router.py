@@ -1,5 +1,5 @@
-from flask import make_response, jsonify
 from application.service.viewer_service import ViewerService
+from flask import make_response, jsonify, request
 
 
 class DataRouter:
@@ -51,18 +51,21 @@ class DataRouter:
         result = jsonify({"count": rv})
         return result
 
-    #TODO here
     def get_term_get_by_id(self, id):
-        rv = self.viewer_service.teacher_get_by_id(id)
+        rv = self.viewer_service.term_get_by_id(id)
+        result = jsonify({"data": rv})
+        return result
+
+
+    def get_terms_params(self):
+        rv = self.viewer_service.term_get_filters()
         result = jsonify({"data": rv})
         return result
 
     def post_term_get_by_params(self):
-        rv = self.viewer_service.teacher_get_by_id(id)
+        discipline_id = int(request.get_json()["discipline_id"])
+        phrase = str(request.get_json()["phrase"])
+        rv = self.viewer_service.term_view(discipline_id, phrase)
         result = jsonify({"data": rv})
         return result
 
-    def get_media_get_by_term(self, term_id):
-        rv = self.viewer_service.teacher_get_by_id(id)
-        result = jsonify({"data": rv})
-        return result
