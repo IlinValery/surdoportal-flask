@@ -48,7 +48,7 @@ class DataRouter:
 
     def get_term_count(self):
         rv = self.viewer_service.term_get_count()
-        result = jsonify({"count": rv})
+        result = jsonify({"count_terms": rv})
         return result
 
     def get_term_get_by_id(self, id):
