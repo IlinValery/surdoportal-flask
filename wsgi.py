@@ -6,7 +6,3 @@ application = Application(port=5555)
 cors = CORS(application.server)
 
 application.server.wsgi_app = ProxyFix(application.server.wsgi_app)
-if __name__ == '__main__':
-    application.create_app()
-    application.server.run(debug=True, port=5555)
-

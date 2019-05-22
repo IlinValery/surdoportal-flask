@@ -8,6 +8,7 @@ class Application:
     def __init__(self, port):
         self.port=port
         self.server = Flask(__name__)
+        self.create_app()
 
     def create_app(self) -> None:
         data_router = DataRouter()
