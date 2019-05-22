@@ -19,6 +19,23 @@ class MediaGateway(MediaBase, VisitorComponent):
         except IntegrityError:
             return {"code": 1, "message": "Error to create media"}
 
+    def read_all(self):
+        cursor = self.connection.db.cursor()
+        result = None
+        request = "SELECT * FROM media"
+        cursor.execute(request)
+        cursor_output = cursor.fetchall()
+        if cursor_output:
+            fields = cursor.description
+            result = []
+            for row in cursor_output:
+                tmp = {}
+                for (index, column) in enumerate(row):
+                    tmp[fields[index][0]] = column
+                result.append(tmp)
+        return result
+
+
     def read_by_term(self, term_id):
         cursor = self.connection.db.cursor()
         result = None

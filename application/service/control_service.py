@@ -81,13 +81,71 @@ class ControlService:
     @staticmethod
     def log_read_last(count):
         logDB = LogGateway()
-        rv = logDB.read_last(count=count)
-        if rv==None:
+        logs = logDB.read_last(count=count)
+
+        user_db = UserGateway()
+        users = user_db.read_all()
+
+        department_db = DepartmentGateway()
+        departments = department_db.read_all()
+
+        discipline_db = DisciplineGateway()
+        disciplines = discipline_db.read_all()
+
+        teacher_db = TeacherGateway()
+        teachers = teacher_db.read_all()
+
+        term_db = TermGateway()
+        terms = term_db.read_for_editor(start=0, end=20, only_invalided=False)
+
+        media_db = MediaGateway()
+        medias = media_db.read_all()
+
+        if logs==None:
             return {}
         else:
-            for (index, column) in enumerate(rv):
-                tmp = column['date_time']
-                rv[index]['date_time'] = tmp.strftime('%d.%m.%Y %H:%M')
+            for (index_log, log) in enumerate(logs):
+                # correct date
+                tmp = log['date_time']
+                log['date_time'] = tmp.strftime('%d.%m.%Y %H:%M')
+                # add user to log
+                for (index_user, user) in enumerate(users):
+                    if (log['user']==user['iduser']):
+                        log['user']=user
+                # long series for if for element detection
+                if (log['table']=="user"):
+                    for (index_user, user) in enumerate(users):
+                        if (log['element'] == user['iduser']):
+                            element_text = user['first_name'] + " " + user['last_name']
+                            log['element'] = {"id":user['iduser'], "text":element_text}
+                if (log['table']=="department"):
+                    for (index_department, department) in enumerate(departments):
+                        if (log['element'] == department['iddepartment']):
+                            element_text = department['initials']
+                            log['element'] = {"id":department['iddepartment'], "text":element_text}
+                if (log['table']=="discipline"):
+                    for (index_discipline, discipline) in enumerate(disciplines):
+                        if (log['element'] == discipline['iddiscipline']):
+                            element_text = discipline['name']
+                            log['element'] = {"id":discipline['iddiscipline'], "text":element_text}
+                if (log['table']=="teacher"):
+                    for (index_teacher, teacher) in enumerate(teachers):
+                        if (log['element'] == teacher['idteacher']):
+                            element_text = teacher['name']
+                            log['element'] = {"id":teacher['idteacher'], "text":element_text}
+                if (log['table']=="term"):
+                    for (index_term, term) in enumerate(terms):
+                        if (log['element'] == term['idterm']):
+                            element_text = term['caption']
+                            log['element'] = {"id":term['idterm'], "text":element_text}
+                if (log['table']=="media"):
+                    for (index_media, media) in enumerate(medias):
+                        if (log['element'] == media['idmedia']):
+                            types = {1: "Жест", 2: "Артикуляция", 3: "Контекстный пример"}
+                            element_text = types[media['type']]
+                            log['element'] = {"id":media['idmedia'], "text":element_text}
+        rv = logs
+
         return rv
 
     @staticmethod
@@ -95,13 +153,65 @@ class ControlService:
         logDB = LogGateway()
         identity = decode(usertoken, secret_key, algorithms)
         user_id = identity['identity']['id']
-        rv = logDB.read_by_user_id(user_id=user_id, count=count)
-        if rv==None:
+        logs = logDB.read_by_user_id(user_id=user_id, count=count)
+        user_db = UserGateway()
+        users = user_db.read_all()
+
+        department_db = DepartmentGateway()
+        departments = department_db.read_all()
+
+        discipline_db = DisciplineGateway()
+        disciplines = discipline_db.read_all()
+
+        teacher_db = TeacherGateway()
+        teachers = teacher_db.read_all()
+
+        term_db = TermGateway()
+        terms = term_db.read_for_editor(start=0, end=20, only_invalided=False)
+
+        media_db = MediaGateway()
+        medias = media_db.read_all()
+
+        if logs==None:
             return {}
         else:
-            for (index, column) in enumerate(rv):
-                tmp = column['date_time']
-                rv[index]['date_time'] = tmp.strftime('%d.%m.%Y %H:%M')
+            for (index_log, log) in enumerate(logs):
+                # correct date
+                tmp = log['date_time']
+                log['date_time'] = tmp.strftime('%d.%m.%Y %H:%M')
+                # long series for if for element detection
+                if (log['table'] == "user"):
+                    for (index_user, user) in enumerate(users):
+                        if (log['element'] == user['iduser']):
+                            element_text = user['first_name'] + " " + user['last_name']
+                            log['element'] = {"id": user['iduser'], "text": element_text}
+                if (log['table'] == "department"):
+                    for (index_department, department) in enumerate(departments):
+                        if (log['element'] == department['iddepartment']):
+                            element_text = department['initials']
+                            log['element'] = {"id": department['iddepartment'], "text": element_text}
+                if (log['table'] == "discipline"):
+                    for (index_discipline, discipline) in enumerate(disciplines):
+                        if (log['element'] == discipline['iddiscipline']):
+                            element_text = discipline['name']
+                            log['element'] = {"id": discipline['iddiscipline'], "text": element_text}
+                if (log['table'] == "teacher"):
+                    for (index_teacher, teacher) in enumerate(teachers):
+                        if (log['element'] == teacher['idteacher']):
+                            element_text = teacher['name']
+                            log['element'] = {"id": teacher['idteacher'], "text": element_text}
+                if (log['table'] == "term"):
+                    for (index_term, term) in enumerate(terms):
+                        if (log['element'] == term['idterm']):
+                            element_text = term['caption']
+                            log['element'] = {"id": term['idterm'], "text": element_text}
+                if (log['table'] == "media"):
+                    for (index_media, media) in enumerate(medias):
+                        if (log['element'] == media['idmedia']):
+                            types = {1: "Жест", 2: "Артикуляция", 3: "Контекстный пример"}
+                            element_text = types[media['type']]
+                            log['element'] = {"id": media['idmedia'], "text": element_text}
+        rv = logs
         return rv
 
 
