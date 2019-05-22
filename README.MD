@@ -15,11 +15,16 @@ mysql -u root -p
 ```
 
 ```mysql
-CREATE USER 'surdo_user'@'localhost' IDENTIFIED BY 'UserPass123)'; # UserPass123)
+CREATE USER 'surdo_user'@'localhost' IDENTIFIED BY 'UserPass123)';
 CREATE DATABASE surdoDB CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
 GRANT ALL PRIVILEGES ON surdoDB.* To 'surdo_user'@'localhost';
 ```
-Then execute all scripts from docs/database_create.txt
+Then execute all scripts from docs/database_create.txt or reset database from surdoDB.sql
+```bash
+mysqldump -u surdo_user -p surdoDB > surdoDB.sql #save database
+mysql -u surdo_user -p surdoDB < surdoDB.sql
+```
+
 
 ## Links for description patterns
 - Log in was created with the help of [this youtube link](https://www.youtube.com/watch?v=BNdIOnn-wik)
