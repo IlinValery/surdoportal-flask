@@ -14,7 +14,6 @@ def execute_from_terminal(args):
             port = 5555
             application = Application(port=port)
             cors = CORS(application.server)
-            #application.create_app()
             application.server.run(debug=True, port=port)
 
         elif command == "createsuperuser":

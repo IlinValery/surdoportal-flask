@@ -46,9 +46,6 @@ class TeacherGateway(TeacherBase, VisitorComponent):
             result = dict(zip(fields, cursor_output))
         return result
 
-    def read_by_department(self, department_id):
-        pass
-
     def update(self):
         cursor = self.connection.db.cursor()
         result = None
