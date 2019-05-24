@@ -1,22 +1,23 @@
 from application.gateway.connection import *
-from application.base_classes import UserBase
 from application.visitor.visitor_component import VisitorComponent
 from application.visitor.visitor import Visitor
 
-class UserGateway(UserBase, VisitorComponent):
+class UserGateway(VisitorComponent):
     connection = DatabaseConnection()
 
-    def create(self):
+    def create(self, email, first_name, last_name, pw_hash, is_superuser):
         cursor = self.connection.db.cursor()
         request = "INSERT INTO user (email, first_name, last_name, password, is_superuser) VALUES" \
                   "(%s, %s, %s, %s, %s)"
-        data = (self.email, self.first_name, self.last_name, self.password, self.is_superuser)
+        data = (email, first_name, last_name, pw_hash, is_superuser)
 
         try:
             cursor.execute(request, data)
             self.connection.db.commit()
+            cursor.close()
             return {"code": 0, "message": "User was created successfully"}
         except IntegrityError:
+            cursor.close()
             return {"code": 1, "message": "Error to load user with same name"}
 
     def read_all(self):
@@ -33,6 +34,7 @@ class UserGateway(UserBase, VisitorComponent):
                 for (index, column) in enumerate(row):
                     tmp[fields[index][0]] = column
                 result.append(tmp)
+        cursor.close()
         return result
 
     def read_by_id(self, user_id):
@@ -46,6 +48,7 @@ class UserGateway(UserBase, VisitorComponent):
         if cursor_output:
             fields = map(lambda x: x[0], cursor.description)
             result = dict(zip(fields, cursor_output))
+        cursor.close()
         return result
 
     def read_by_email(self, user_email):
@@ -58,42 +61,49 @@ class UserGateway(UserBase, VisitorComponent):
         if cursor_output:
             fields = map(lambda x: x[0], cursor.description)
             result = dict(zip(fields, cursor_output))
+        cursor.close()
         return result
 
-    def update_fields(self):
+    def update_fields(self, id_user, email, first_name, last_name, is_superuser):
         cursor = self.connection.db.cursor()
         result = None
         request = "UPDATE user SET email = %s, first_name = %s, last_name = %s, is_superuser = %s WHERE (iduser = %s)"
-        data = (self.email, self.first_name, self.last_name, self.is_superuser, self.id)
+        data = (email, first_name, last_name, is_superuser, id_user)
         try:
             cursor.execute(request, data)
             self.connection.db.commit()
+            cursor.close()
             return {"code": 0, "message": "User was changed successfully"}
         except IntegrityError:
+            cursor.close()
             return {"code": 1, "message": "Error to load user with same name"}
 
-    def update_password(self):
+    def update_password(self, id_user, pw_hash):
         cursor = self.connection.db.cursor()
         result = None
         request = "UPDATE user SET password = %s  WHERE (iduser = %s)"
-        data = (self.password, self.id)
+        data = (pw_hash, id_user)
         try:
             cursor.execute(request, data)
             self.connection.db.commit()
+            cursor.close()
             return {"code": 0, "message": "User password was changed successfully"}
         except IntegrityError:
+            cursor.close()
             return {"code": 1, "message": "Something went wrong"}
 
-    def delete(self):
+    def delete(self, user_id):
         cursor = self.connection.db.cursor()
         result = None
         request = "DELETE FROM user WHERE (iduser = %s)"
-        data = (self.id,)
+        data = (user_id,)
         try:
             cursor.execute(request, data)
             self.connection.db.commit()
+            cursor.close()
             return {"code": 0, "message": "User was deleted successfully"}
         except IntegrityError:
+            cursor.close()
             return {"code": 1, "message": "Something went wrong"}
 
     def access_get_number(self, visitor: Visitor):

@@ -12,5 +12,5 @@ def create_superuser():
     pw_hash = generate_password_hash(password)
     is_superuser = 1
     #print(email, first_name, last_name, pw_hash, is_superuser)
-    user = UserGateway(user_email=email, user_fn=first_name, user_sn=last_name, user_pass=pw_hash, user_su=str(is_superuser))
-    user.create()
+    user = UserGateway()
+    user.create(email, first_name, last_name, pw_hash, is_superuser)

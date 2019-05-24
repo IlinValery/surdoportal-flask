@@ -50,10 +50,8 @@ class EditorService:
     def term_add(usertoken, caption, description, discipline, teacher, lesson, image_path, is_shown = 0):
         identity = decode(usertoken, secret_key, algorithms)
         user_id = identity['identity']['id']
-        term_db = TermGateway(term_caption=caption, term_description=description, term_discipline=discipline,
-                              term_teacher=teacher, term_creator=user_id, term_lesson=lesson, term_image=image_path,
-                              term_is_shown=is_shown)
-        database_result = term_db.create()
+        term_db = TermGateway()
+        database_result = term_db.create(caption, description, discipline, teacher, lesson, image_path, user_id, is_shown)
         result = {
             "code": database_result['code'],
             "message": database_result['message'],
@@ -95,20 +93,18 @@ class EditorService:
 
     @staticmethod
     def term_edit_by_id(usertoken, term_id,  caption, description, discipline, teacher, lesson, image_path, is_shown = 0):
-        term_db = TermGateway(term_id=term_id, term_caption=caption, term_description=description, term_discipline=discipline,
-                              term_teacher=teacher, term_lesson=lesson, term_image=image_path,
-                              term_is_shown=is_shown)
-        rv = term_db.update()
+        term_db = TermGateway()
+        rv = term_db.update(term_id,  caption, description, discipline, teacher, lesson, image_path, is_shown)
         if rv['code'] == 0:
             ControlService.write_to_log(usertoken, "term", str(term_id), "edit")
         return rv
 
     @staticmethod
     def media_add(usertoken, type, youtube_id, term_id):
-        media_db = MediaGateway(media_type=type, media_youtube_id=youtube_id, media_to_term=term_id)
-        term_db = TermGateway(term_id=term_id, term_is_shown=0)
-        term_db.update_validation()
-        database_result = media_db.create()
+        media_db = MediaGateway()
+        term_db = TermGateway()
+        term_db.update_validation(term_id, is_shown=0)
+        database_result = media_db.create(type, youtube_id, term_id)
         result = {
             "code": database_result['code'],
             "message": database_result['message'],
@@ -121,10 +117,10 @@ class EditorService:
 
     @staticmethod
     def media_edit_by_id(usertoken, media_id, type, youtube_id, term):
-        term_db = TermGateway(term_id=term, term_is_shown=0)
-        term_db.update_validation()
-        media_db = MediaGateway(media_id=media_id, media_type=type, media_youtube_id=youtube_id)
-        rv = media_db.update()
+        term_db = TermGateway()
+        term_db.update_validation(term, is_shown=0)
+        media_db = MediaGateway()
+        rv = media_db.update(media_id, type, youtube_id,)
         if rv['code'] == 0:
             ControlService.write_to_log(usertoken, "media", str(media_id), "edit")
         return rv

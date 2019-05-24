@@ -1,21 +1,22 @@
 from application.gateway.connection import *
-from application.base_classes import TermBase
 from application.visitor.visitor_component import VisitorComponent
 from application.visitor.visitor import Visitor
 
 
-class TermGateway(TermBase, VisitorComponent):
+class TermGateway(VisitorComponent):
     connection = DatabaseConnection()
 
-    def create(self):
+    def create(self, caption, description, discipline, teacher, lesson, image_path, creator, is_shown = 0):
         cursor = self.connection.db.cursor()
         request = "INSERT INTO term (caption, description, lesson, teacher, discipline, image_path, creator, is_shown) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-        data = (self.caption, self.description, self.lesson, self.teacher, self.discipline, self.image_path, self.creator, self.is_shown)
+        data = (caption, description, lesson, teacher, discipline, image_path, creator, is_shown)
         try:
             cursor.execute(request, data)
             self.connection.db.commit()
+            cursor.close()
             return {"code": 0, "message": "Term was created successfully"}
         except IntegrityError:
+            cursor.close()
             return {"code": 1, "message": "Error to create term"}
 
     def read_for_editor(self, start=0, end=100, only_invalided=False, discipline_id=0, user_id=0):
@@ -57,6 +58,7 @@ class TermGateway(TermBase, VisitorComponent):
                 for (index, column) in enumerate(row):
                     tmp[fields[index][0]] = column
                 result.append(tmp)
+        cursor.close()
         return result
 
     def read_for_view(self, start=0, end=100, discipline_id=0, phrase=""):
@@ -93,6 +95,7 @@ class TermGateway(TermBase, VisitorComponent):
                 for (index, column) in enumerate(row):
                     tmp[fields[index][0]] = column
                 result.append(tmp)
+        cursor.close()
         return result
 
     def read_by_id(self, term_id):
@@ -105,45 +108,52 @@ class TermGateway(TermBase, VisitorComponent):
         if cursor_output:
             fields = map(lambda x: x[0], cursor.description)
             result = dict(zip(fields, cursor_output))
+        cursor.close()
         return result
 
-    def update(self):
+    def update(self, term_id,  caption, description, discipline, teacher, lesson, image_path, is_shown):
         cursor = self.connection.db.cursor()
         result = None
         request = "UPDATE term SET caption = %s, description = %s, lesson= %s, teacher= %s, discipline= %s, image_path= %s, is_shown= %s WHERE (idterm = %s)"
-        data = (self.caption, self.description, self.lesson, self.teacher, self.discipline, self.image_path, self.is_shown, self.id)
+        data = (caption, description, lesson, teacher, discipline, image_path, is_shown, term_id)
 
         try:
             cursor.execute(request, data)
             self.connection.db.commit()
+            cursor.close()
             return {"code": 0, "message": "Term was changed successfully"}
         except IntegrityError:
+            cursor.close()
             return {"code": 1, "message": "Error to change term"}
 
-    def update_validation(self):
+    def update_validation(self, term_id, is_shown):
         cursor = self.connection.db.cursor()
         result = None
         request = "UPDATE term SET is_shown= %s WHERE (idterm = %s)"
-        data = (self.is_shown, self.id)
+        data = (is_shown, term_id)
 
         try:
             cursor.execute(request, data)
             self.connection.db.commit()
+            cursor.close()
             return {"code": 0, "message": "Term validation was changed successfully"}
         except IntegrityError:
+            cursor.close()
             return {"code": 1, "message": "Error to change term validation"}
         pass
 
-    def delete(self):
+    def delete(self, term_id):
         cursor = self.connection.db.cursor()
         result = None
         request = "DELETE FROM term WHERE (idterm = %s)"
-        data = (self.id,)
+        data = (term_id,)
         try:
             cursor.execute(request, data)
             self.connection.db.commit()
+            cursor.close()
             return {"code": 0, "message": "Term was deleted successfully"}
         except IntegrityError:
+            cursor.close()
             return {"code": 1, "message": "Something went wrong"}
 
 

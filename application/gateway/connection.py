@@ -12,3 +12,4 @@ class DatabaseConnection:
             charset="utf8",
 
         )
+

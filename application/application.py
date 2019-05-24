@@ -72,3 +72,4 @@ class Application:
             self.server.add_url_rule('/api/term/filters', view_func=data_router.get_terms_params, methods=['GET'])
             self.server.add_url_rule('/api/term/count', view_func=data_router.get_term_count, methods=['GET'])
             self.server.add_url_rule('/api/term/<int:id>', view_func=data_router.get_term_get_by_id, methods=['GET'])
+            self.server.add_url_rule('/api/term/random', view_func=data_router.get_term_random, methods=['GET'])

@@ -56,6 +56,11 @@ class DataRouter:
         result = jsonify({"data": rv})
         return result
 
+    def get_term_random(self):
+        rv = self.viewer_service.term_get_random()
+        result = jsonify({"data": rv})
+        return result
+
 
     def get_terms_params(self):
         rv = self.viewer_service.term_get_filters()

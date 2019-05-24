@@ -3,6 +3,7 @@ from application.gateway.discipline_gateway import DisciplineGateway
 from application.gateway.teacher_gateway import TeacherGateway
 from application.gateway.media_gateway import MediaGateway
 from application.gateway.term_gateway import TermGateway
+from application.visitor.visitor_random_number import VisitorRandomNumber
 
 class ViewerService:
 
@@ -63,6 +64,45 @@ class ViewerService:
     @staticmethod
     def term_get_by_id(id):
         term_db = TermGateway()
+        terms = term_db.read_by_id(id)
+        teacher_db = TeacherGateway()
+        teachers = teacher_db.read_all()
+        if teachers==None:
+            teachers = {}
+
+        disciplines = {}
+        department_db = DepartmentGateway()
+        departments = department_db.read_all()
+        if departments==None:
+            departments = {}
+        else:
+            discipline_db = DisciplineGateway()
+            disciplines = discipline_db.read_all()
+            if disciplines==None:
+                disciplines = {}
+            else:
+                for (index, row_discipline) in enumerate(disciplines):
+                    department_id = row_discipline['department_id']
+                    department = ''
+                    for (index, row) in enumerate(departments):
+                        if row['iddepartment']==department_id:
+                            department = row['initials']
+                    row_discipline['department_id'] = department
+
+
+        if terms==None:
+            return {"term": {}, "media": {}}
+        else:
+            media_db = MediaGateway()
+            rv = media_db.read_by_term(id)
+            if rv == None:
+                rv = {}
+            return {"term": terms, "media": rv, "disciplines": disciplines, "teachers": teachers}
+
+    @staticmethod
+    def term_get_random():
+        term_db = TermGateway()
+        id = term_db.access_get_number(visitor=VisitorRandomNumber)
         terms = term_db.read_by_id(id)
         teacher_db = TeacherGateway()
         teachers = teacher_db.read_all()
